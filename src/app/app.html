@@ -1,25 +1,52 @@
-<!-- TOPBAR (fixed, full width) -->
-<p-toolbar class="fixed inset-x-0 top-0 z-50 bg-surface-0 border-b border-surface-200">
-  <div class="p-toolbar-group-start flex items-center gap-3">
-    <span class="text-lg font-semibold text-surface-900">My Store</span>
-  </div>
-  <div class="p-toolbar-group-end">
-    <button pButton label="Login" icon="pi pi-user" class="p-button-sm"></button>
-  </div>
-</p-toolbar>
+<div class="overflow-x-hidden">
+  <!-- TOPBAR -->
+  <p-toolbar [dt]="ToolbarToken" class="fixed top-0 inset-x-0 z-50 text-whiteshadow">
+    <div class="p-toolbar-group-start flex items-center gap-3">
+      <button pButton icon="pi pi-bars" class="p-button-sm" (click)="toggleSidebar()"
+        aria-label="Toggle sidebar"></button>
+    </div>
+    <div>
+      <p-image src="/images/logopositivo.png" alt="Image" width="250" />
+    </div>
+  </p-toolbar>
 
-<!-- LAYOUT: sidebar sits *below* the topbar -->
-<div class="flex pt-16 min-h-screen bg-surface-50">
-  <!-- SIDEBAR -->
-  <aside class="w-60 shrink-0 border-r border-surface-200 bg-surface-0 p-3">
-    <p-panelmenu [model]="menu" styleClass="w-full" />
-  </aside>
 
-  <!-- CONTENT -->
-  <main class="flex-1 p-6">
-    <h2 class="text-2xl font-semibold text-surface-900 mb-3">Welcome</h2>
-    <p class="text-surface-700">Your main content goes here.</p>
-    <!-- Or use the router -->
-    <!-- <router-outlet /> -->
-  </main>
+  <!-- LAYOUT -->
+  <div class="flex pt-19 min-h-screen bg-surface-50">
+    <aside class="fixed top-19 left-0 z-40 w-60 h-[calc(100vh-4.75rem)] bg-surface-0 border-r border-surface-200 p-3
+         transition-transform duration-300 ease-in-out flex flex-col" [class.-translate-x-full]="!sidebarVisible">
+
+      <p-panelmenu [model]="menu" class="flex-1 overflow-auto" />
+
+      <div class="mt-auto flex flex-col">
+        <button
+          class="w-full flex items-center justify-between p-2 hover:bg-surface-100 cursor-pointer transition-colors duration-200"
+          (click)="toggleUserMenu()" [attr.aria-expanded]="userMenuOpen">
+          <span class="inline-flex flex-col text-left">
+            <span class="font-bold">Usuario</span>
+            <span class="text-sm">Admin</span>
+          </span>
+          <i class="pi pi-chevron-down transform-gpu transition-transform duration-200"
+            [class.rotate-180]="userMenuOpen"></i>
+        </button>
+
+        <div id="user-actions" class="overflow-hidden transition-all duration-200"
+          [style.maxHeight]="userMenuOpen ? '4rem' : '0'">
+          <button label="Cerrar sesión" icon="pi pi-sign-out"
+            class="w-full h-[2rem] justify-start hover:bg-surface-100 cursor-pointer transition-colors duration-200" variant="text" (click)="onLogout()">
+            <span class="pi pi-sign-out"></span>
+            Cerrar sesión
+          </button>
+
+        </div>
+      </div>
+    </aside>
+
+    <main class="p-6 transition-transform duration-300 ease-in-out min-w-0" [class.translate-x-60]="sidebarVisible"
+      [class.translate-x-0]="!sidebarVisible" [class.w-[calc(100vw-15rem)]]="sidebarVisible"
+      [class.w-screen]="!sidebarVisible">
+      <router-outlet />
+    </main>
+
+  </div>
 </div>

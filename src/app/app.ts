@@ -4,22 +4,62 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { ToolbarToken } from './theme/tokens';
+import { ImageModule } from 'primeng/image';
+import { MenuModule } from 'primeng/menu';
+
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, ToolbarModule, ButtonModule, PanelMenuModule, RouterModule],
+  imports: [
+    CommonModule,
+    ToolbarModule,
+    ButtonModule,
+    PanelMenuModule,
+    RouterModule,
+    IconFieldModule,
+    InputIconModule,
+    SplitButtonModule,
+    ImageModule,
+    MenuModule
+  ],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
+  ToolbarToken = ToolbarToken;
+  sidebarVisible = true;
+  userMenuOpen = false;
+
   menu = [
     { label: 'Home', icon: 'pi pi-home', routerLink: '/' },
+    { label: 'Clientes', icon: 'pi pi-users', routerLink: '/' },
     {
-      label: 'Products', icon: 'pi pi-mobile',
+      label: 'Documents',
       items: [
-        { label: 'Phones', icon: 'pi pi-phone', routerLink: '/phones' },
-        { label: 'Plans', icon: 'pi pi-list', routerLink: '/plans' }
+        {
+          label: 'New',
+          icon: 'pi pi-plus',
+        },
+        {
+          label: 'Search',
+          icon: 'pi pi-search',
+        }
       ]
     },
-    { label: 'Support', icon: 'pi pi-question-circle', routerLink: '/support' }
   ];
+
+  toggleSidebar() {
+    this.sidebarVisible = !this.sidebarVisible;
+  }
+
+  toggleUserMenu() {
+    this.userMenuOpen = !this.userMenuOpen;
+  }
+
+  onLogout() {
+    console.log('Cerrar sesión');
+  }
 }

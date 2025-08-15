@@ -1,7 +1,7 @@
 import { definePreset } from '@primeuix/themes';
 import Material from '@primeuix/themes/material';
 
-const EvolucionTelefonicaPreset = definePreset(Material, {
+const MainPreset = definePreset(Material, {
     semantic: {
         primary: {
             50: '{sky.50}',
@@ -16,8 +16,10 @@ const EvolucionTelefonicaPreset = definePreset(Material, {
             900: '{sky.900}',
             950: '{sky.950}'
         },
-        
-    }
+    },
+    tokens: {
+        primary: '{semantic.primary}',
+    },
 });
 
-export default EvolucionTelefonicaPreset;
+export default MainPreset;

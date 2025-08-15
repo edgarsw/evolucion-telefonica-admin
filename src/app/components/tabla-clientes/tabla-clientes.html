@@ -1,0 +1,242 @@
+<p-toast />
+<p-confirmdialog />
+<p-table #tablaClientes [value]="clientes" stripedRows size="small" [globalFilterFields]="globalFilterFields"
+    [tableStyle]="{ 'min-width': '50rem' }" [scrollable]="true">
+
+    <ng-template #caption>
+        <div class="flex justify-between">
+            <p-button label="Agregar" [outlined]="true" icon="pi pi-user-plus" (onClick)="onAddClick()" />
+            <div class="flex items-center gap-2">
+                <p-button severity="secondary" label="Limpiar" [outlined]="true" icon="pi pi-filter-slash"
+                    (click)="clear(tablaClientes, searchInput)" />
+                <p-iconfield iconPosition="left" class="ml-auto">
+                    <p-inputicon>
+                        <i class="pi pi-search"></i>
+                    </p-inputicon>
+                    <input #searchInput pInputText type="text"
+                        (input)="tablaClientes.filterGlobal(searchInput.value, 'contains')" placeholder="Buscar..." />
+                </p-iconfield>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #header>
+        <tr>
+            <th class="whitespace-nowrap">Activo</th>
+            <th class="whitespace-nowrap">Razón Social</th>
+            <th class="whitespace-nowrap">RFC</th>
+            <th class="whitespace-nowrap">Calle</th>
+            <th class="whitespace-nowrap">N° Exterior</th>
+            <th class="whitespace-nowrap">N° Interior</th>
+            <th class="whitespace-nowrap">Colonia</th>
+            <th class="whitespace-nowrap">Estado</th>
+            <th class="whitespace-nowrap">Ciudad</th>
+            <th class="whitespace-nowrap">Municipio</th>
+            <th class="whitespace-nowrap">C.P.</th>
+            <th class="whitespace-nowrap">Celular</th>
+            <th class="whitespace-nowrap">Teléfono Fijo</th>
+            <th class="whitespace-nowrap">Correo</th>
+            <th class="whitespace-nowrap">Facebook</th>
+            <th pFrozenColumn alignFrozen="right"></th>
+        </tr>
+    </ng-template>
+
+    <ng-template #body let-rowData>
+        <tr>
+            <td class="whitespace-nowrap">{{ rowData.clienteactivo }}</td>
+            <td class="whitespace-nowrap">{{ rowData.nombre }}</td>
+            <td class="whitespace-nowrap">{{ rowData.rfc }}</td>
+            <td class="whitespace-nowrap">{{ rowData.calle }}</td>
+            <td class="whitespace-nowrap">{{ rowData.numexterior }}</td>
+            <td class="whitespace-nowrap">{{ rowData.numinterior }}</td>
+            <td class="whitespace-nowrap">{{ rowData.colonia }}</td>
+            <td class="whitespace-nowrap">{{ rowData.estado }}</td>
+            <td class="whitespace-nowrap">{{ rowData.ciudad }}</td>
+            <td class="whitespace-nowrap">{{ rowData.municipio }}</td>
+            <td class="whitespace-nowrap">{{ rowData.cp }}</td>
+            <td class="whitespace-nowrap">{{ rowData.telefono }}</td>
+            <td class="whitespace-nowrap">{{ rowData.telefonofijo }}</td>
+            <td class="whitespace-nowrap">{{ rowData.correo }}</td>
+            <td class="whitespace-nowrap">{{ rowData.facebook }}</td>
+            <td class="whitespace-nowrap" pFrozenColumn alignFrozen="right">
+                <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true"
+                    (click)="editClient(rowData)" size="small" />
+                <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
+                    (click)="deleteProduct($event, rowData)" size="small" />
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+<p-dialog [(visible)]="editVisible" [modal]="true" header="Editar cliente"
+    [style]="{ width: '900px', maxWidth: '95vw' }" [draggable]="false" [resizable]="false" (onHide)="cancelEdit()">
+
+    <form #editForm="ngForm" (ngSubmit)="saveEdit(editForm)" [class.submitted]="editForm.submitted" class="mt-2">
+        <div class="flex flex-wrap gap-6">
+            <!-- Columna 1 -->
+            <div class="flex-1 flex flex-col gap-3 min-w-[300px]">
+                <p-floatlabel variant="on">
+                    <input pInputText id="nombre_e" name="nombre" [(ngModel)]="editCliente.nombre" required
+                        maxlength="300" autocomplete="off" class="w-full"
+                        [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['nombre'].invalid}" />
+                    <label for="nombre_e">Nombre Fiscal <span class="text-red-500">*</span></label>
+                </p-floatlabel>
+
+                <p-floatlabel variant="on">
+                    <input pInputText id="rfc_e" name="rfc" [(ngModel)]="editCliente.rfc" maxlength="300"
+                        autocomplete="off" class="w-full" />
+                    <label for="rfc_e">RFC</label>
+                </p-floatlabel>
+
+                <p-floatlabel variant="on">
+                    <input pInputText id="calle_e" name="calle" [(ngModel)]="editCliente.calle" required maxlength="300"
+                        autocomplete="off" class="w-full"
+                        [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['calle'].invalid}" />
+                    <label for="calle_e">Calle <span class="text-red-500">*</span></label>
+                </p-floatlabel>
+
+                <p-floatlabel variant="on">
+                    <input pInputText id="numexterior_e" name="numexterior" [(ngModel)]="editCliente.numexterior"
+                        required maxlength="300" autocomplete="off" class="w-full"
+                        [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['numexterior'].invalid}" />
+                    <label for="numexterior_e">N° Exterior <span class="text-red-500">*</span></label>
+                </p-floatlabel>
+
+                <p-floatlabel variant="on">
+                    <input pInputText id="numinterior_e" name="numinterior" [(ngModel)]="editCliente.numinterior"
+                        maxlength="300" autocomplete="off" class="w-full" />
+                    <label for="numinterior_e">N° Interior</label>
+                </p-floatlabel>
+
+                <p-floatlabel variant="on">
+                    <input pInputText id="colonia_e" name="colonia" [(ngModel)]="editCliente.colonia" required
+                        maxlength="300" autocomplete="off" class="w-full"
+                        [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['colonia'].invalid}" />
+                    <label for="colonia_e">Colonia <span class="text-red-500">*</span></label>
+                </p-floatlabel>
+
+                <p-floatlabel variant="on">
+                    <p-select id="estado_e" name="estado" [(ngModel)]="editCliente.estado" [options]="estados"
+                        optionLabel="name" optionValue="name" class="w-full"
+                        [ngClass]="{'p-invalid': editForm.submitted && !editCliente.estado}"></p-select>
+                    <label for="estado_e">Estado <span class="text-red-500">*</span></label>
+                    <input type="text" name="estado_hidden" [(ngModel)]="editCliente.estado" required hidden />
+                </p-floatlabel>
+
+                <p-floatlabel variant="on">
+                    <p-select id="ciudad_e" name="ciudad" [(ngModel)]="editCliente.ciudad" [options]="ciudades"
+                        optionLabel="name" optionValue="name" class="w-full"
+                        [ngClass]="{'p-invalid': editForm.submitted && !editCliente.ciudad}"></p-select>
+                    <label for="ciudad_e">Ciudad <span class="text-red-500">*</span></label>
+                    <input type="text" name="ciudad_hidden" [(ngModel)]="editCliente.ciudad" required hidden />
+                </p-floatlabel>
+
+                <p-floatlabel variant="on">
+                    <input pInputText id="municipio_e" name="municipio" [(ngModel)]="editCliente.municipio"
+                        maxlength="300" autocomplete="off" class="w-full" />
+                    <label for="municipio_e">Municipio</label>
+                </p-floatlabel>
+
+                <p-floatlabel variant="on">
+                    <input pInputText id="cp_e" name="cp" [(ngModel)]="editCliente.cp" required maxlength="300"
+                        autocomplete="off" class="w-full"
+                        [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['cp'].invalid}" />
+                    <label for="cp_e">Código Postal <span class="text-red-500">*</span></label>
+                </p-floatlabel>
+
+                <p-floatlabel variant="on">
+                    <input pInputText id="telefono_e" name="telefono" [(ngModel)]="editCliente.telefono" required
+                        maxlength="10" autocomplete="off" class="w-full"
+                        [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['telefono'].invalid}" />
+                    <label for="telefono_e">N° Teléfono Celular <span class="text-red-500">*</span></label>
+                </p-floatlabel>
+
+                <div class="flex items-center h-[2rem] gap-2 pl-1">
+                    <p-checkbox inputId="isfoto_e" name="isfoto" binary="true"
+                        [(ngModel)]="editCliente.isfoto"></p-checkbox>
+                    <label for="isfoto_e">Foto forzosa</label>
+                </div>
+
+                <div class="flex items-center h-[2rem] gap-2 pl-1">
+                    <p-checkbox inputId="iscomercial_e" name="iscomercial" binary="true"
+                        [(ngModel)]="editCliente.iscomercial"></p-checkbox>
+                    <label for="iscomercial_e">Cliente Comercial <span class="text-red-500">*</span></label>
+                </div>
+            </div>
+
+            <!-- Columna 2 -->
+            <div class="flex-1 flex flex-col gap-3 min-w-[300px]">
+                <p-floatlabel variant="on">
+                    <input pInputText id="telefonofijo_e" name="telefonofijo" [(ngModel)]="editCliente.telefonofijo"
+                        required maxlength="10" autocomplete="off" class="w-full"
+                        [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['telefonofijo'].invalid}" />
+                    <label for="telefonofijo_e">N° Teléfono Fijo <span class="text-red-500">*</span></label>
+                </p-floatlabel>
+
+                <p-floatlabel variant="on">
+                    <input pInputText id="correo_e" name="correo" [(ngModel)]="editCliente.correo" required
+                        maxlength="300" autocomplete="off" class="w-full"
+                        [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['correo'].invalid}" />
+                    <label for="correo_e">Correo Electrónico <span class="text-red-500">*</span></label>
+                </p-floatlabel>
+
+                <p-floatlabel variant="on">
+                    <input pInputText id="facebook_e" name="facebook" [(ngModel)]="editCliente.facebook" maxlength="300"
+                        autocomplete="off" class="w-full" />
+                    <label for="facebook_e">Facebook</label>
+                </p-floatlabel>
+
+                <p-floatlabel variant="on">
+                    <input pInputText id="precioconsigna_e" name="precioconsigna"
+                        [(ngModel)]="editCliente.precioconsigna" required autocomplete="off" class="w-full"
+                        [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['precioconsigna'].invalid}" />
+                    <label for="precioconsigna_e">Precio consigna <span class="text-red-500">*</span></label>
+                </p-floatlabel>
+
+                <p-floatlabel variant="on">
+                    <input pInputText id="latitud_e" name="latitud" [(ngModel)]="editCliente.latitud" autocomplete="off"
+                        class="w-full" />
+                    <label for="latitud_e">Latitud</label>
+                </p-floatlabel>
+
+                <p-floatlabel variant="on">
+                    <input pInputText id="longitud_e" name="longitud" [(ngModel)]="editCliente.longitud"
+                        autocomplete="off" class="w-full" />
+                    <label for="longitud_e">Longitud</label>
+                </p-floatlabel>
+
+                <p-floatlabel variant="on">
+                    <p-select id="idzona_e" name="idzona" [(ngModel)]="editCliente.idzona" [options]="zonas"
+                        optionLabel="name" optionValue="name" class="w-full"></p-select>
+                    <label for="idzona_e">Zona</label>
+                </p-floatlabel>
+
+                <p-floatlabel variant="on">
+                    <input pInputText id="giro_e" name="giro" [(ngModel)]="editCliente.giro" required maxlength="300"
+                        autocomplete="off" class="w-full"
+                        [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['giro'].invalid}" />
+                    <label for="giro_e">Giro <span class="text-red-500">*</span></label>
+                </p-floatlabel>
+
+                <p-floatlabel variant="on">
+                    <p-select id="clasificacion_e" name="clasificacion" [(ngModel)]="editCliente.clasificacion"
+                        [options]="tipoClientes" optionLabel="name" optionValue="name" class="w-full"
+                        [ngClass]="{'p-invalid': editForm.submitted && !editCliente.clasificacion}"></p-select>
+                    <label for="clasificacion_e">Tipo cliente <span class="text-red-500">*</span></label>
+                    <input type="text" name="clasificacion_hidden" [(ngModel)]="editCliente.clasificacion" required
+                        hidden />
+                </p-floatlabel>
+
+                <p-floatlabel variant="on">
+                    <textarea pInputTextarea id="referencia_e" name="referencia" [(ngModel)]="editCliente.referencia"
+                        rows="3" cols="30" class="w-full resize-none h-[7rem]"></textarea>
+                    <label for="referencia_e">Referencia</label>
+                </p-floatlabel>
+            </div>
+        </div>
+
+        <div class="mt-4 flex justify-end gap-2">
+            <button pButton type="button" label="Cancelar" class="p-button-outlined" (click)="cancelEdit()"></button>
+            <button pButton type="submit" label="Guardar"></button>
+        </div>
+    </form>
+</p-dialog>
