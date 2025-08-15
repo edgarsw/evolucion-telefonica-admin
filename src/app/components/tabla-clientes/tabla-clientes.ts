@@ -14,6 +14,7 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
 import { SelectModule } from 'primeng/select';
 import { NgClass } from '@angular/common';
 import { ciudades, estados, tipoClientes, zonas } from '../../utils/hardcode-data.utils';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 
 
@@ -33,7 +34,8 @@ import { ciudades, estados, tipoClientes, zonas } from '../../utils/hardcode-dat
     CheckboxModule,
     ToastModule,
     ConfirmDialog,
-    SelectModule
+    SelectModule,
+    InputNumberModule
   ],
   providers: [ConfirmationService, MessageService],
   templateUrl: './tabla-clientes.html',

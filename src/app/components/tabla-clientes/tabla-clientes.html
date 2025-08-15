@@ -75,161 +75,176 @@
             <!-- Columna 1 -->
             <div class="flex-1 flex flex-col gap-3 min-w-[300px]">
                 <p-floatlabel variant="on">
-                    <input pInputText id="nombre_e" name="nombre" [(ngModel)]="editCliente.nombre" required
+                    <input pInputText id="nombre" name="nombre" [(ngModel)]="editCliente.nombre" required
                         maxlength="300" autocomplete="off" class="w-full"
                         [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['nombre'].invalid}" />
-                    <label for="nombre_e">Nombre Fiscal <span class="text-red-500">*</span></label>
+                    <label for="nombre">Nombre Fiscal <span class="text-red-500">*</span></label>
                 </p-floatlabel>
 
                 <p-floatlabel variant="on">
-                    <input pInputText id="rfc_e" name="rfc" [(ngModel)]="editCliente.rfc" maxlength="300"
+                    <input pInputText id="rfc" name="rfc" [(ngModel)]="editCliente.rfc" maxlength="300"
                         autocomplete="off" class="w-full" />
-                    <label for="rfc_e">RFC</label>
+                    <label for="rfc">RFC</label>
                 </p-floatlabel>
 
                 <p-floatlabel variant="on">
-                    <input pInputText id="calle_e" name="calle" [(ngModel)]="editCliente.calle" required maxlength="300"
+                    <input pInputText id="calle" name="calle" [(ngModel)]="editCliente.calle" required maxlength="300"
                         autocomplete="off" class="w-full"
                         [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['calle'].invalid}" />
-                    <label for="calle_e">Calle <span class="text-red-500">*</span></label>
+                    <label for="calle">Calle <span class="text-red-500">*</span></label>
                 </p-floatlabel>
 
                 <p-floatlabel variant="on">
-                    <input pInputText id="numexterior_e" name="numexterior" [(ngModel)]="editCliente.numexterior"
+                    <input pInputText id="numexterior" name="numexterior" [(ngModel)]="editCliente.numexterior"
                         required maxlength="300" autocomplete="off" class="w-full"
                         [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['numexterior'].invalid}" />
-                    <label for="numexterior_e">N° Exterior <span class="text-red-500">*</span></label>
+                    <label for="numexterior">N° Exterior <span class="text-red-500">*</span></label>
                 </p-floatlabel>
 
                 <p-floatlabel variant="on">
-                    <input pInputText id="numinterior_e" name="numinterior" [(ngModel)]="editCliente.numinterior"
+                    <input pInputText id="numinterior" name="numinterior" [(ngModel)]="editCliente.numinterior"
                         maxlength="300" autocomplete="off" class="w-full" />
-                    <label for="numinterior_e">N° Interior</label>
+                    <label for="numinterior">N° Interior</label>
                 </p-floatlabel>
 
                 <p-floatlabel variant="on">
-                    <input pInputText id="colonia_e" name="colonia" [(ngModel)]="editCliente.colonia" required
+                    <input pInputText id="colonia" name="colonia" [(ngModel)]="editCliente.colonia" required
                         maxlength="300" autocomplete="off" class="w-full"
                         [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['colonia'].invalid}" />
-                    <label for="colonia_e">Colonia <span class="text-red-500">*</span></label>
+                    <label for="colonia">Colonia <span class="text-red-500">*</span></label>
                 </p-floatlabel>
 
                 <p-floatlabel variant="on">
-                    <p-select id="estado_e" name="estado" [(ngModel)]="editCliente.estado" [options]="estados"
+                    <p-select id="estado" name="estado" [(ngModel)]="editCliente.estado" [options]="estados"
                         optionLabel="name" optionValue="name" class="w-full"
                         [ngClass]="{'p-invalid': editForm.submitted && !editCliente.estado}"></p-select>
-                    <label for="estado_e">Estado <span class="text-red-500">*</span></label>
+                    <label for="estado">Estado <span class="text-red-500">*</span></label>
                     <input type="text" name="estado_hidden" [(ngModel)]="editCliente.estado" required hidden />
                 </p-floatlabel>
 
                 <p-floatlabel variant="on">
-                    <p-select id="ciudad_e" name="ciudad" [(ngModel)]="editCliente.ciudad" [options]="ciudades"
+                    <p-select id="ciudad" name="ciudad" [(ngModel)]="editCliente.ciudad" [options]="ciudades"
                         optionLabel="name" optionValue="name" class="w-full"
                         [ngClass]="{'p-invalid': editForm.submitted && !editCliente.ciudad}"></p-select>
-                    <label for="ciudad_e">Ciudad <span class="text-red-500">*</span></label>
+                    <label for="ciudad">Ciudad <span class="text-red-500">*</span></label>
                     <input type="text" name="ciudad_hidden" [(ngModel)]="editCliente.ciudad" required hidden />
                 </p-floatlabel>
 
                 <p-floatlabel variant="on">
-                    <input pInputText id="municipio_e" name="municipio" [(ngModel)]="editCliente.municipio"
+                    <input pInputText id="municipio" name="municipio" [(ngModel)]="editCliente.municipio"
                         maxlength="300" autocomplete="off" class="w-full" />
-                    <label for="municipio_e">Municipio</label>
+                    <label for="municipio">Municipio</label>
                 </p-floatlabel>
 
                 <p-floatlabel variant="on">
-                    <input pInputText id="cp_e" name="cp" [(ngModel)]="editCliente.cp" required maxlength="300"
-                        autocomplete="off" class="w-full"
-                        [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['cp'].invalid}" />
-                    <label for="cp_e">Código Postal <span class="text-red-500">*</span></label>
+                    <p-inputnumber class="w-full" 
+                        id="cp" 
+                        name="cp" 
+                        [(ngModel)]="editCliente.cp" 
+                        [useGrouping]="false" 
+                        required 
+                        [maxlength]="5"
+                        autocomplete="off" 
+                        [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['cp'].invalid}" 
+                    />
+                    <label for="cp">Código Postal <span class="text-red-500">*</span></label>
                 </p-floatlabel>
 
                 <p-floatlabel variant="on">
-                    <input pInputText id="telefono_e" name="telefono" [(ngModel)]="editCliente.telefono" required
-                        maxlength="10" autocomplete="off" class="w-full"
-                        [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['telefono'].invalid}" />
-                    <label for="telefono_e">N° Teléfono Celular <span class="text-red-500">*</span></label>
+                    <p-inputnumber class="w-full"
+                        id="telefono" 
+                        name="telefono" 
+                        [(ngModel)]="editCliente.telefono" 
+                        [useGrouping]="false" 
+                        required
+                        [maxlength]="10" 
+                        autocomplete="off" 
+                        [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['telefono'].invalid}" 
+                    />
+                    <label for="telefono">N° Teléfono Celular <span class="text-red-500">*</span></label>
                 </p-floatlabel>
 
                 <div class="flex items-center h-[2rem] gap-2 pl-1">
-                    <p-checkbox inputId="isfoto_e" name="isfoto" binary="true"
+                    <p-checkbox inputId="isfoto" name="isfoto" binary="true"
                         [(ngModel)]="editCliente.isfoto"></p-checkbox>
-                    <label for="isfoto_e">Foto forzosa</label>
+                    <label for="isfoto">Foto forzosa</label>
                 </div>
 
                 <div class="flex items-center h-[2rem] gap-2 pl-1">
-                    <p-checkbox inputId="iscomercial_e" name="iscomercial" binary="true"
+                    <p-checkbox inputId="iscomercial" name="iscomercial" binary="true"
                         [(ngModel)]="editCliente.iscomercial"></p-checkbox>
-                    <label for="iscomercial_e">Cliente Comercial <span class="text-red-500">*</span></label>
+                    <label for="iscomercial">Cliente Comercial <span class="text-red-500">*</span></label>
                 </div>
             </div>
 
             <!-- Columna 2 -->
             <div class="flex-1 flex flex-col gap-3 min-w-[300px]">
                 <p-floatlabel variant="on">
-                    <input pInputText id="telefonofijo_e" name="telefonofijo" [(ngModel)]="editCliente.telefonofijo"
-                        required maxlength="10" autocomplete="off" class="w-full"
-                        [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['telefonofijo'].invalid}" />
-                    <label for="telefonofijo_e">N° Teléfono Fijo <span class="text-red-500">*</span></label>
+                    <p-inputnumber id="telefonofijo" name="telefonofijo" [(ngModel)]="editCliente.telefonofijo" [useGrouping]="false" required
+                        [maxlength]="10" autocomplete="off" class="w-full"
+                        [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['telefonofijo'].invalid}"
+                    />
+                    <label for="telefonofijo">N° Teléfono Fijo <span class="text-red-500">*</span></label>
                 </p-floatlabel>
 
                 <p-floatlabel variant="on">
-                    <input pInputText id="correo_e" name="correo" [(ngModel)]="editCliente.correo" required
+                    <input pInputText id="correo" name="correo" [(ngModel)]="editCliente.correo" required
                         maxlength="300" autocomplete="off" class="w-full"
                         [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['correo'].invalid}" />
-                    <label for="correo_e">Correo Electrónico <span class="text-red-500">*</span></label>
+                    <label for="correo">Correo Electrónico <span class="text-red-500">*</span></label>
                 </p-floatlabel>
 
                 <p-floatlabel variant="on">
-                    <input pInputText id="facebook_e" name="facebook" [(ngModel)]="editCliente.facebook" maxlength="300"
+                    <input pInputText id="facebook" name="facebook" [(ngModel)]="editCliente.facebook" maxlength="300"
                         autocomplete="off" class="w-full" />
-                    <label for="facebook_e">Facebook</label>
+                    <label for="facebook">Facebook</label>
                 </p-floatlabel>
 
                 <p-floatlabel variant="on">
-                    <input pInputText id="precioconsigna_e" name="precioconsigna"
-                        [(ngModel)]="editCliente.precioconsigna" required autocomplete="off" class="w-full"
-                        [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['precioconsigna'].invalid}" />
-                    <label for="precioconsigna_e">Precio consigna <span class="text-red-500">*</span></label>
+                    <p-inputnumber id="precioconsigna" name="precioconsigna" [(ngModel)]="editCliente.precioconsigna"
+                        required autocomplete="off" class="w-full" [maxFractionDigits]="5"
+                        [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['precioconsigna'].invalid}"/>
+                    <label for="precioconsigna">Precio consigna <span class="text-red-500">*</span></label>
                 </p-floatlabel>
 
                 <p-floatlabel variant="on">
-                    <input pInputText id="latitud_e" name="latitud" [(ngModel)]="editCliente.latitud" autocomplete="off"
+                    <input pInputText id="latitud" name="latitud" [(ngModel)]="editCliente.latitud" autocomplete="off"
                         class="w-full" />
-                    <label for="latitud_e">Latitud</label>
+                    <label for="latitud">Latitud</label>
                 </p-floatlabel>
 
                 <p-floatlabel variant="on">
-                    <input pInputText id="longitud_e" name="longitud" [(ngModel)]="editCliente.longitud"
+                    <input pInputText id="longitud" name="longitud" [(ngModel)]="editCliente.longitud"
                         autocomplete="off" class="w-full" />
-                    <label for="longitud_e">Longitud</label>
+                    <label for="longitud">Longitud</label>
                 </p-floatlabel>
 
                 <p-floatlabel variant="on">
-                    <p-select id="idzona_e" name="idzona" [(ngModel)]="editCliente.idzona" [options]="zonas"
+                    <p-select id="idzona" name="idzona" [(ngModel)]="editCliente.idzona" [options]="zonas"
                         optionLabel="name" optionValue="name" class="w-full"></p-select>
-                    <label for="idzona_e">Zona</label>
+                    <label for="idzona">Zona</label>
                 </p-floatlabel>
 
                 <p-floatlabel variant="on">
-                    <input pInputText id="giro_e" name="giro" [(ngModel)]="editCliente.giro" required maxlength="300"
+                    <input pInputText id="giro" name="giro" [(ngModel)]="editCliente.giro" required maxlength="300"
                         autocomplete="off" class="w-full"
                         [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['giro'].invalid}" />
-                    <label for="giro_e">Giro <span class="text-red-500">*</span></label>
+                    <label for="giro">Giro <span class="text-red-500">*</span></label>
                 </p-floatlabel>
 
                 <p-floatlabel variant="on">
-                    <p-select id="clasificacion_e" name="clasificacion" [(ngModel)]="editCliente.clasificacion"
+                    <p-select id="clasificacion" name="clasificacion" [(ngModel)]="editCliente.clasificacion"
                         [options]="tipoClientes" optionLabel="name" optionValue="name" class="w-full"
                         [ngClass]="{'p-invalid': editForm.submitted && !editCliente.clasificacion}"></p-select>
-                    <label for="clasificacion_e">Tipo cliente <span class="text-red-500">*</span></label>
+                    <label for="clasificacion">Tipo cliente <span class="text-red-500">*</span></label>
                     <input type="text" name="clasificacion_hidden" [(ngModel)]="editCliente.clasificacion" required
                         hidden />
                 </p-floatlabel>
 
                 <p-floatlabel variant="on">
-                    <textarea pInputTextarea id="referencia_e" name="referencia" [(ngModel)]="editCliente.referencia"
+                    <textarea pInputTextarea id="referencia" name="referencia" [(ngModel)]="editCliente.referencia"
                         rows="3" cols="30" class="w-full resize-none h-[7rem]"></textarea>
-                    <label for="referencia_e">Referencia</label>
+                    <label for="referencia">Referencia</label>
                 </p-floatlabel>
             </div>
         </div>

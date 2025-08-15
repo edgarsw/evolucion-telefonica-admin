@@ -7,6 +7,8 @@ import { TextareaModule } from 'primeng/textarea';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
+import { InputNumberModule } from 'primeng/inputnumber';
+
 import { NgClass } from '@angular/common';
 import { ciudades, estados, newCliente, tipoClientes, zonas } from '../../utils/hardcode-data.utils';
 
@@ -22,7 +24,8 @@ import { ciudades, estados, newCliente, tipoClientes, zonas } from '../../utils/
     TextareaModule,
     CheckboxModule,
     ButtonModule,
-    SelectModule
+    SelectModule,
+    InputNumberModule
   ],
   templateUrl: './agregar-cliente-form.html'
 })

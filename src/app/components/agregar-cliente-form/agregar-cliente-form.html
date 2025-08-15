@@ -67,16 +67,30 @@
             </p-floatlabel>
 
             <p-floatlabel variant="on">
-                <input pInputText id="cp" name="cp" [(ngModel)]="newCliente.cp" required maxlength="300"
-                    autocomplete="off" class="w-full"
-                    [ngClass]="{'p-invalid': clienteForm.submitted && clienteForm.controls['cp'].invalid}" />
+                <p-inputnumber class="w-full" 
+                    id="cp" 
+                    name="cp" 
+                    [(ngModel)]="newCliente.cp" 
+                    [useGrouping]="false" 
+                    required 
+                    [maxlength]="5"
+                    autocomplete="off" 
+                    [ngClass]="{'p-invalid': clienteForm.submitted && clienteForm.controls['cp'].invalid}" 
+                />
                 <label for="cp">Código Postal <span class="text-red-500">*</span></label>
             </p-floatlabel>
 
             <p-floatlabel variant="on">
-                <input pInputText id="telefono" name="telefono" [(ngModel)]="newCliente.telefono" required
-                    maxlength="10" autocomplete="off" class="w-full"
-                    [ngClass]="{'p-invalid': clienteForm.submitted && clienteForm.controls['telefono'].invalid}" />
+                <p-inputnumber class="w-full"
+                    id="telefono" 
+                    name="telefono" 
+                    [(ngModel)]="newCliente.telefono" 
+                    [useGrouping]="false" 
+                    required
+                    [maxlength]="10" 
+                    autocomplete="off" 
+                    [ngClass]="{'p-invalid': clienteForm.submitted && clienteForm.controls['telefono'].invalid}" 
+                />
                 <label for="telefono">N° Teléfono Celular <span class="text-red-500">*</span></label>
             </p-floatlabel>
 
@@ -96,9 +110,10 @@
         <!-- Columna 2 -->
         <div class="flex-1 flex flex-col gap-3 min-w-[300px]">
             <p-floatlabel variant="on">
-                <input pInputText id="telefonofijo" name="telefonofijo" [(ngModel)]="newCliente.telefonofijo" required
-                    maxlength="10" autocomplete="off" class="w-full"
-                    [ngClass]="{'p-invalid': clienteForm.submitted && clienteForm.controls['telefonofijo'].invalid}" />
+                <p-inputnumber id="telefonofijo" name="telefonofijo" [(ngModel)]="newCliente.telefonofijo" [useGrouping]="false" required
+                    [maxlength]="10" autocomplete="off" class="w-full"
+                    [ngClass]="{'p-invalid': clienteForm.submitted && clienteForm.controls['telefonofijo'].invalid}"
+                />
                 <label for="telefonofijo">N° Teléfono Fijo <span class="text-red-500">*</span></label>
             </p-floatlabel>
 
@@ -116,9 +131,9 @@
             </p-floatlabel>
 
             <p-floatlabel variant="on">
-                <input pInputText id="precioconsigna" name="precioconsigna" [(ngModel)]="newCliente.precioconsigna"
-                    required autocomplete="off" class="w-full"
-                    [ngClass]="{'p-invalid': clienteForm.submitted && clienteForm.controls['precioconsigna'].invalid}" />
+                <p-inputnumber id="precioconsigna" name="precioconsigna" [(ngModel)]="newCliente.precioconsigna"
+                    required autocomplete="off" class="w-full" [maxFractionDigits]="5"
+                    [ngClass]="{'p-invalid': clienteForm.submitted && clienteForm.controls['precioconsigna'].invalid}"/>
                 <label for="precioconsigna">Precio consigna <span class="text-red-500">*</span></label>
             </p-floatlabel>
 
