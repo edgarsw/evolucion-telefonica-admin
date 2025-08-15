@@ -95,8 +95,8 @@
                 </p-floatlabel>
 
                 <p-floatlabel variant="on">
-                    <input pInputText id="numexterior" name="numexterior" [(ngModel)]="editCliente.numexterior"
-                        required maxlength="300" autocomplete="off" class="w-full"
+                    <input pInputText id="numexterior" name="numexterior" [(ngModel)]="editCliente.numexterior" required
+                        maxlength="300" autocomplete="off" class="w-full"
                         [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['numexterior'].invalid}" />
                     <label for="numexterior">N° Exterior <span class="text-red-500">*</span></label>
                 </p-floatlabel>
@@ -137,30 +137,16 @@
                 </p-floatlabel>
 
                 <p-floatlabel variant="on">
-                    <p-inputnumber class="w-full" 
-                        id="cp" 
-                        name="cp" 
-                        [(ngModel)]="editCliente.cp" 
-                        [useGrouping]="false" 
-                        required 
-                        [maxlength]="5"
-                        autocomplete="off" 
-                        [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['cp'].invalid}" 
-                    />
+                    <p-inputnumber class="w-full" id="cp" name="cp" [(ngModel)]="editCliente.cp" [useGrouping]="false"
+                        required [maxlength]="5" autocomplete="off"
+                        [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['cp'].invalid}" />
                     <label for="cp">Código Postal <span class="text-red-500">*</span></label>
                 </p-floatlabel>
 
                 <p-floatlabel variant="on">
-                    <p-inputnumber class="w-full"
-                        id="telefono" 
-                        name="telefono" 
-                        [(ngModel)]="editCliente.telefono" 
-                        [useGrouping]="false" 
-                        required
-                        [maxlength]="10" 
-                        autocomplete="off" 
-                        [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['telefono'].invalid}" 
-                    />
+                    <p-inputnumber class="w-full" id="telefono" name="telefono" [(ngModel)]="editCliente.telefono"
+                        [useGrouping]="false" required [maxlength]="10" autocomplete="off"
+                        [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['telefono'].invalid}" />
                     <label for="telefono">N° Teléfono Celular <span class="text-red-500">*</span></label>
                 </p-floatlabel>
 
@@ -180,10 +166,9 @@
             <!-- Columna 2 -->
             <div class="flex-1 flex flex-col gap-3 min-w-[300px]">
                 <p-floatlabel variant="on">
-                    <p-inputnumber id="telefonofijo" name="telefonofijo" [(ngModel)]="editCliente.telefonofijo" [useGrouping]="false" required
-                        [maxlength]="10" autocomplete="off" class="w-full"
-                        [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['telefonofijo'].invalid}"
-                    />
+                    <p-inputnumber id="telefonofijo" name="telefonofijo" [(ngModel)]="editCliente.telefonofijo"
+                        [useGrouping]="false" required [maxlength]="10" autocomplete="off" class="w-full"
+                        [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['telefonofijo'].invalid}" />
                     <label for="telefonofijo">N° Teléfono Fijo <span class="text-red-500">*</span></label>
                 </p-floatlabel>
 
@@ -203,7 +188,7 @@
                 <p-floatlabel variant="on">
                     <p-inputnumber id="precioconsigna" name="precioconsigna" [(ngModel)]="editCliente.precioconsigna"
                         required autocomplete="off" class="w-full" [maxFractionDigits]="5"
-                        [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['precioconsigna'].invalid}"/>
+                        [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['precioconsigna'].invalid}" />
                     <label for="precioconsigna">Precio consigna <span class="text-red-500">*</span></label>
                 </p-floatlabel>
 
