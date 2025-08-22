@@ -1,4 +1,4 @@
-interface Cliente {
+interface Client {
   clienteactivo: string;
   nombre: string;
   rfc?: string;

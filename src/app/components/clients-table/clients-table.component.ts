@@ -15,11 +15,12 @@ import { SelectModule } from 'primeng/select';
 import { NgClass } from '@angular/common';
 import { ciudades, estados, tipoClientes, zonas } from '../../utils/hardcode-data.utils';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { TextareaModule } from 'primeng/textarea';
 
 
 
 @Component({
-  selector: 'app-tabla-clientes',
+  selector: 'app-clients-table',
   standalone: true,
   imports: [
     FormsModule,
@@ -35,13 +36,14 @@ import { InputNumberModule } from 'primeng/inputnumber';
     ToastModule,
     ConfirmDialog,
     SelectModule,
-    InputNumberModule
+    InputNumberModule,
+    TextareaModule
   ],
   providers: [ConfirmationService, MessageService],
-  templateUrl: './tabla-clientes.html',
+  templateUrl: './clients-table.component.html',
 })
-export class TablaClientes {
-  @Input() clientes: Cliente[] = [];
+export class ClientsTableComponent {
+  @Input() clientes: Client[] = [];
   @Output() addRequested = new EventEmitter<void>();
   zonas = zonas;
   tipoClientes = tipoClientes;
@@ -54,16 +56,20 @@ export class TablaClientes {
     private messageService: MessageService
   ) { }
 
-  globalFilterFields: (keyof Cliente)[] = [
+  globalFilterFields: (keyof Client)[] = [
     'clienteactivo', 'nombre', 'rfc', 'calle', 'numexterior', 'numinterior', 'colonia',
     'estado', 'ciudad', 'municipio', 'cp', 'telefono', 'telefonofijo', 'correo', 'facebook'
   ];
 
   editVisible = false;
-  private editingRef: Cliente | null = null;
-  editCliente: Cliente = this.emptyCliente();
+  saldoVisible = false;
+  saldoCliente: Client | null = null;
+  saldoValue: number | null = null;
+  porcentajeValue: number | null = null;
+  private editingRef: Client | null = null;
+  editCliente: Client = this.emptyCliente();
 
-  private emptyCliente(): Cliente {
+  private emptyCliente(): Client {
     return {
       clienteactivo: '',
       nombre: '',
@@ -102,7 +108,7 @@ export class TablaClientes {
     if (input) input.value = '';
   }
 
-  editClient(rowData: Cliente) {
+  editClient(rowData: Client) {
     this.editingRef = rowData;
 
     this.editCliente = { ...rowData };
@@ -127,7 +133,7 @@ export class TablaClientes {
     this.editingRef = null;
   }
 
-  deleteProduct(event: Event, rowData: Cliente) {
+  deleteProduct(event: Event, rowData: Client) {
     this.confirmationService.confirm({
       target: event.currentTarget as HTMLElement,
       message: '¿Eliminar este cliente?',
@@ -141,5 +147,32 @@ export class TablaClientes {
         this.messageService.add({ severity: 'info', summary: 'Eliminado', detail: 'Cliente eliminado' });
       }
     });
+  }
+
+  addSaldo(rowData: Client) {
+    this.saldoCliente = rowData;
+    this.saldoValue = null;
+    this.porcentajeValue = null;
+    this.saldoVisible = true;
+  }
+
+  cancelSaldo() {
+    this.saldoVisible = false;
+    this.saldoCliente = null;
+    this.saldoValue = null;
+    this.porcentajeValue = null;
+  }
+
+  confirmSaldo(form: NgForm) {
+    if (form.invalid) {
+      form.control.markAllAsTouched();
+      return;
+    }
+    if (this.saldoCliente) {
+      console.log('Cliente:', this.saldoCliente.nombre);
+      console.log('Saldo:', this.saldoValue);
+      console.log('Porcentaje:', this.porcentajeValue);
+    }
+    this.saldoVisible = false;
   }
 }

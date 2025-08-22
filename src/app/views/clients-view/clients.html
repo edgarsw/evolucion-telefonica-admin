@@ -6,15 +6,15 @@
 
 <p-card>
   @if (!showAddForm) {
-  <app-tabla-clientes [clientes]="clientes" (addRequested)="onAddRequested()">
-  </app-tabla-clientes>
+  <app-clients-table [clientes]="clientes" (addRequested)="onAddRequested()">
+  </app-clients-table>
   } @else {
   <div class="mb-3">
     <p-button variant="text" label="Volver" icon="pi pi-arrow-left" (onClick)="showAddForm = false">
     </p-button>
   </div>
 
-  <app-agregar-cliente-form (register)="onRegister($event)">
-  </app-agregar-cliente-form>
+  <app-add-client-form (register)="onRegister($event)">
+  </app-add-client-form>
   }
 </p-card>

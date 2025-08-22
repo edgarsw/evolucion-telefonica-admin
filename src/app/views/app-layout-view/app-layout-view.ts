@@ -61,7 +61,7 @@ export class AppLayoutView {
           icon: 'pi pi-search',
         }
       ] },
-    { label: 'Empleado', icon: 'fas people-carry-box', routerLink: '/' },
+    { label: 'Empleado', icon: 'pi pi-box', routerLink: '/' },
     { label: 'Clientes', icon: 'pi pi-users', routerLink: '/' },
     {
       label: 'Documents',

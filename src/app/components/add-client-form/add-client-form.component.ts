@@ -13,7 +13,7 @@ import { NgClass } from '@angular/common';
 import { ciudades, estados, newCliente, tipoClientes, zonas } from '../../utils/hardcode-data.utils';
 
 @Component({
-  selector: 'app-agregar-cliente-form',
+  selector: 'app-add-client-form',
   standalone: true,
   imports: [
     FormsModule,
@@ -27,9 +27,9 @@ import { ciudades, estados, newCliente, tipoClientes, zonas } from '../../utils/
     SelectModule,
     InputNumberModule
   ],
-  templateUrl: './agregar-cliente-form.html'
+  templateUrl: './add-client-form.component.html'
 })
-export class AgregarClienteForm {
+export class AgregarClienteFormComponent {
   @Output() register = new EventEmitter<any>();
   zonas = zonas;
   tipoClientes = tipoClientes;
