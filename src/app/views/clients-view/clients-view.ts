@@ -27,7 +27,7 @@ import { clientes } from '../../utils/hardcode-data.utils';
   providers: [
     MessageService
   ],
-  templateUrl: './clients.html'
+  templateUrl: './clients-view.html'
 })
 export class ClientesComponent {
   showAddForm = false;

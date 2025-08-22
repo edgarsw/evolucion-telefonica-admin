@@ -63,19 +63,6 @@ export class AppLayoutView {
       ] },
     { label: 'Empleado', icon: 'pi pi-box', routerLink: '/' },
     { label: 'Clientes', icon: 'pi pi-users', routerLink: '/' },
-    {
-      label: 'Documents',
-      items: [
-        {
-          label: 'New',
-          icon: 'pi pi-plus',
-        },
-        {
-          label: 'Search',
-          icon: 'pi pi-search',
-        }
-      ]
-    },
   ];
 
   toggleSidebar() {

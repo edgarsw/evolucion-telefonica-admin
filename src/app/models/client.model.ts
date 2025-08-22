@@ -11,9 +11,7 @@ interface Client {
   municipio?: string;
   cp: string;
   telefono: string;
-  telefonofijo: string;
   correo: string;
-  facebook?: string;
   precioconsigna: string;
   latitud?: string;
   longitud?: string;

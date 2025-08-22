@@ -58,7 +58,7 @@ export class ClientsTableComponent {
 
   globalFilterFields: (keyof Client)[] = [
     'clienteactivo', 'nombre', 'rfc', 'calle', 'numexterior', 'numinterior', 'colonia',
-    'estado', 'ciudad', 'municipio', 'cp', 'telefono', 'telefonofijo', 'correo', 'facebook'
+    'estado', 'ciudad', 'municipio', 'cp', 'telefono', 'correo'
   ];
 
   editVisible = false;
@@ -83,9 +83,7 @@ export class ClientsTableComponent {
       municipio: '',
       cp: '',
       telefono: '',
-      telefonofijo: '',
       correo: '',
-      facebook: '',
       precioconsigna: '',
       latitud: '',
       longitud: '',
