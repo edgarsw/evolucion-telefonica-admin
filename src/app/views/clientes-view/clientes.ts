@@ -5,11 +5,11 @@ import { CardModule } from 'primeng/card';
 import { CheckboxModule } from 'primeng/checkbox';
 import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
-import { AgregarClienteForm } from '../components/agregar-cliente-form/agregar-cliente-form';
-import { TablaClientes } from '../components/tabla-clientes/tabla-clientes';
+import { AgregarClienteForm } from '../../components/agregar-cliente-form/agregar-cliente-form';
+import { TablaClientes } from '../../components/tabla-clientes/tabla-clientes';
 import { MessageService } from 'primeng/api';
 import { Toast } from 'primeng/toast';
-import { clientes } from '../utils/hardcode-data.utils';
+import { clientes } from '../../utils/hardcode-data.utils';
 
 @Component({
   selector: 'app-clientes',

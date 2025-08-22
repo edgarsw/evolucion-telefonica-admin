@@ -1,0 +1,15 @@
+<div class="w-screen h-screen bg-cyan-600 flex items-center justify-center">
+    <p-panel>
+        <div class="flex flex-col gap-2 justify-center">
+            <p-iftalabel>
+                <input pInputText id="username" [(ngModel)]="username" autocomplete="off" />
+                <label for="username">Usuario</label>
+            </p-iftalabel>
+            <p-iftalabel>
+                <input pInputText id="password" [(ngModel)]="password" autocomplete="off" />
+                <label for="username">Contraseña</label>
+            </p-iftalabel>
+            <p-button class="place-self-center" label="Submit" />
+        </div>
+    </p-panel>
+</div>

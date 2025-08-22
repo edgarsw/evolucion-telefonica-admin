@@ -1,0 +1,58 @@
+<div class="overflow-x-hidden">
+  <!-- TOPBAR -->
+  <p-toolbar [dt]="ToolbarToken" class="fixed top-0 inset-x-0 z-50 text-whiteshadow">
+    <div class="p-toolbar-group-start flex items-center gap-3">
+      <button pButton icon="pi pi-bars" class="p-button-sm" (click)="toggleSidebar()"
+        aria-label="Toggle sidebar"></button>
+    </div>
+    <div>
+      <p-image src="/images/logopositivo.png" alt="Image" width="250" />
+    </div>
+  </p-toolbar>
+
+
+  <!-- LAYOUT -->
+  <div class="flex pt-19 min-h-screen bg-surface-50">
+    <aside class="fixed top-19 bottom-4 left-0 z-40 w-60 bg-primary-950 border-r border-surface-200 pt-3
+         transition-transform duration-300 ease-in-out flex flex-col" [class.-translate-x-full]="!sidebarVisible">
+      <p-panelmenu [dt]="PanelMenuToken" [model]="menu" class="flex-1 overflow-auto" />
+
+      <div class="mt-auto flex flex-col text-white">
+        <button
+          class="w-full flex items-center justify-between p-2 hover:bg-primary cursor-pointer transition-colors duration-200"
+          (click)="toggleUserMenu()" [attr.aria-expanded]="userMenuOpen">
+          <span class="inline-flex flex-col text-left">
+            <span class="font-bold">Usuario</span>
+            <span class="text-sm">Admin</span>
+          </span>
+          <i class="pi pi-chevron-down transform-gpu transition-transform duration-200"
+            [class.rotate-180]="userMenuOpen"></i>
+        </button>
+
+        <div id="user-actions" class="overflow-hidden transition-all duration-200 text-white bg-primary-950"
+          [style.maxHeight]="userMenuOpen ? '4rem' : '0'">
+          <button label="Cerrar sesión" icon="pi pi-sign-out"
+            class="text-white w-full h-[2rem] justify-start hover:bg-primary cursor-pointer transition-colors duration-200"
+            variant="text" (click)="onLogout()">
+            <span class="pi pi-sign-out"></span>
+            Cerrar sesión
+          </button>
+
+        </div>
+      </div>
+    </aside>
+    <main class="p-6 pb-12 transition-transform duration-300 ease-in-out min-w-0"
+      [class.translate-x-60]="sidebarVisible" [class.translate-x-0]="!sidebarVisible"
+      [class.w-[calc(100vw-15rem)]]="sidebarVisible" [class.w-screen]="!sidebarVisible">
+      <router-outlet />
+    </main>
+
+    <footer class="fixed inset-x-0 bottom-0 z-50 h-5 bg-primary border-t border-surface-200
+         text-sm text-[#E5E5E5] flex items-center justify-center">
+      Copyring(c) edgar.salinas
+    </footer>
+
+
+  </div>
+
+</div>
