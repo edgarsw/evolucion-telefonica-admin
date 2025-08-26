@@ -74,6 +74,6 @@ export class AppLayoutView {
   }
 
   onLogout() {
-    console.log('Cerrar sesión');
+    this.router.navigate(['/login']);
   }
 }

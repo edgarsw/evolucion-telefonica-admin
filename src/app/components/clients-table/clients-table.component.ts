@@ -170,6 +170,7 @@ export class ClientsTableComponent {
       console.log('Cliente:', this.saldoCliente.nombre);
       console.log('Saldo:', this.saldoValue);
       console.log('Porcentaje:', this.porcentajeValue);
+      this.messageService.add({ severity: 'success', summary: 'Actualizado', detail: 'Saldo anadido' });
     }
     this.saldoVisible = false;
   }

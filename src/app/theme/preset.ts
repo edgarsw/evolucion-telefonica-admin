@@ -20,6 +20,22 @@ const MainPreset = definePreset(Material, {
     tokens: {
         primary: '{semantic.primary}',
     },
+    components: {
+        button: {
+            colorScheme: {
+                light: {
+                    root: {
+                        primary: {
+                            hoverBackground: '#3b94b8',
+                            hoverBorderColor: '#3b94b8',
+                            activeBackground: '#1D3C50',
+                            activeBorderColor: '#1D3C50',
+                        }
+                    }
+                },
+            },
+        }
+    }
 });
 
 export default MainPreset;
