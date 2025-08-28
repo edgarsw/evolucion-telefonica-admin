@@ -21,29 +21,29 @@ export const tipoClientes = [
 ]
 
 export const newCliente = {
-    clienteactivo: 'true',
-    nombre: 'Nombre por defecto',
-    rfc: 'XAXX010101000',
-    calle: 'Calle Fija',
-    numexterior: '123',
-    numinterior: '',
-    colonia: 'Centro',
-    estado: 'Oaxaca',
-    ciudad: 'Cholula',
-    municipio: '',
-    cp: '68000',
-    telefono: '9511234567',
-    correo: 'correo@ejemplo.com',
-    precioconsigna: '1000',
-    latitud: '',
-    longitud: '',
-    idzona: 'Oaxaca Centro',
-    giro: 'Comercial',
-    clasificacion: 'A',
-    referencia: 'Referencia por defecto',
-    isfoto: undefined,
-    iscomercial: undefined
+  isActiveClient: 1,
+  name: 'Default Name',
+  taxId: 'XAXX010101000',
+  street: 'Fixed Street',
+  exteriorNumber: '123',
+  interiorNumber: '',
+  neighborhood: 'Centro',
+  state: 'Oaxaca',
+  city: 'Cholula',
+  municipality: '',
+  postalCode: 68000,
+  phone: '9511234567',
+  email: 'correo@ejemplo.com',
+  consignmentPriceICC: '1000',
+  latitude: '',
+  longitude: '',
+  zoneId: 'Oaxaca Centro',
+  businessType: 'Comercial',
+  reference: 'Default reference',
+  hasPhoto: 0,
+  isCommercial: 1
 };
+
 
 export const clientes = [
   {

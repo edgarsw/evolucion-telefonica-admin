@@ -9,7 +9,8 @@ import { AgregarClienteFormComponent } from '../../components/add-client-form/ad
 import { ClientsTableComponent } from '../../components/clients-table/clients-table.component';
 import { MessageService } from 'primeng/api';
 import { Toast } from 'primeng/toast';
-import { clientes } from '../../utils/hardcode-data.utils';
+import { ClientService } from '../../services/client.service';
+import { StatusResponse } from '../../enums/status-response.enum';
 
 @Component({
   selector: 'app-clients',
@@ -31,10 +32,22 @@ import { clientes } from '../../utils/hardcode-data.utils';
 })
 export class ClientesComponent {
   showAddForm = false;
-  clientes = clientes;
+  clientes: any[] = [];
 
   constructor(private messageService: MessageService) { }
 
+  private clientService = inject(ClientService)
+
+  ngOnInit(): void {
+    this.clientService.getClients().subscribe({
+      next: (res) => {
+        if (res.status === StatusResponse.SUCCESS) {
+          this.clientes = res.data;
+        }
+      },
+      error: (err) => console.error('Error fetching clients', err),
+    });
+  }
 
   onRegister(cliente: any) {
     console.log("cliente", cliente);

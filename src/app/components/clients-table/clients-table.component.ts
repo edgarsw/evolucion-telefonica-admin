@@ -16,6 +16,7 @@ import { NgClass } from '@angular/common';
 import { ciudades, estados, tipoClientes, zonas } from '../../utils/hardcode-data.utils';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { TextareaModule } from 'primeng/textarea';
+import { Client } from '../../models/client.model';
 
 
 
@@ -57,8 +58,8 @@ export class ClientsTableComponent {
   ) { }
 
   globalFilterFields: (keyof Client)[] = [
-    'clienteactivo', 'nombre', 'rfc', 'calle', 'numexterior', 'numinterior', 'colonia',
-    'estado', 'ciudad', 'municipio', 'cp', 'telefono', 'correo'
+    'isActiveClient', 'name', 'taxId', 'street', 'exteriorNumber', 'interiorNumber',
+    'neighborhood', 'state', 'city', 'municipality', 'postalCode', 'phone', 'email'
   ];
 
   editVisible = false;
@@ -71,28 +72,28 @@ export class ClientsTableComponent {
 
   private emptyCliente(): Client {
     return {
-      clienteactivo: '',
-      nombre: '',
-      rfc: '',
-      calle: '',
-      numexterior: '',
-      numinterior: '',
-      colonia: '',
-      estado: '',
-      ciudad: '',
-      municipio: '',
-      cp: '',
-      telefono: '',
-      correo: '',
-      precioconsigna: '',
-      latitud: '',
-      longitud: '',
-      idzona: '',
-      giro: '',
-      clasificacion: '',
-      referencia: '',
-      isfoto: undefined,
-      iscomercial: undefined
+      clientId: 0,
+      name: '',
+      taxId: '',
+      street: '',
+      exteriorNumber: '',
+      interiorNumber: '',
+      neighborhood: '',
+      state: '',
+      city: '',
+      municipality: '',
+      postalCode: 0,
+      phone: '',
+      email: '',
+      consignmentPriceICC: '',
+      latitude: '',
+      longitude: '',
+      zoneId: '',
+      businessType: '',
+      reference: '',
+      hasPhoto: 0,
+      isCommercial: 0,
+      isActiveClient: 1,
     };
   }
 
@@ -167,7 +168,7 @@ export class ClientsTableComponent {
       return;
     }
     if (this.saldoCliente) {
-      console.log('Cliente:', this.saldoCliente.nombre);
+      console.log('Cliente:', this.saldoCliente.name);
       console.log('Saldo:', this.saldoValue);
       console.log('Porcentaje:', this.porcentajeValue);
       this.messageService.add({ severity: 'success', summary: 'Actualizado', detail: 'Saldo anadido' });

@@ -1,7 +1,7 @@
-// src/app/services/auth.service.ts
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs';
+import { isPlatformBrowser } from '@angular/common';
 import { environment } from '../environment/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -11,14 +11,48 @@ export class AuthService {
     private tokenKey = 'access_token';
     private refreshKey = 'refresh_token';
 
-    constructor(private http: HttpClient) { }
+    constructor(
+        private http: HttpClient,
+        @Inject(PLATFORM_ID) private platformId: Object
+    ) { }
+
+    private setTokens(token: string, refreshToken: string): void {
+        if (isPlatformBrowser(this.platformId)) {
+            localStorage.setItem(this.tokenKey, token);
+            localStorage.setItem(this.refreshKey, refreshToken);
+        }
+    }
+
+    private clearTokens(): void {
+        if (isPlatformBrowser(this.platformId)) {
+            localStorage.removeItem(this.tokenKey);
+            localStorage.removeItem(this.refreshKey);
+        }
+    }
+
+    getToken(): string | null {
+        if (isPlatformBrowser(this.platformId)) {
+            return localStorage.getItem(this.tokenKey);
+        }
+        return null;
+    }
+
+    getRefreshToken(): string | null {
+        if (isPlatformBrowser(this.platformId)) {
+            return localStorage.getItem(this.refreshKey);
+        }
+        return null;
+    }
 
     login(username: string, password: string) {
         return this.http.post<any>(`${this.apiAuth}/login`, { username, password }).pipe(
-            tap(res => {
-                localStorage.setItem(this.tokenKey, res.token);
-                localStorage.setItem(this.refreshKey, res.refreshToken);
-            })
+            tap(res => this.setTokens(res.token, res.refreshToken))
+        );
+    }
+
+    loginEmployee(username: string, password: string) {
+        return this.http.post<any>(`${this.apiAuth}/login-employee`, { username, password }).pipe(
+            tap(res => this.setTokens(res.token, res.refreshToken))
         );
     }
 
@@ -27,26 +61,29 @@ export class AuthService {
     }
 
     refreshToken() {
-        const refreshToken = localStorage.getItem(this.refreshKey);
+        const refreshToken = this.getRefreshToken();
         return this.http.post<any>(`${this.apiAuth}/refresh-token`, { refreshToken }).pipe(
-            tap(res => {
-                localStorage.setItem(this.tokenKey, res.token);
-                localStorage.setItem(this.refreshKey, res.refreshToken);
-            })
+            tap(res => this.setTokens(res.token, res.refreshToken))
         );
     }
 
     logout() {
-        const token = localStorage.getItem(this.tokenKey);
+        const token = this.getToken();
         return this.http.post(`${this.apiAuth}/logout`, { token }).pipe(
-            tap(() => {
-                localStorage.removeItem(this.tokenKey);
-                localStorage.removeItem(this.refreshKey);
-            })
+            tap(() => this.clearTokens())
         );
     }
 
-    getToken() {
-        return localStorage.getItem(this.tokenKey);
+    isLoggedIn(): boolean {
+        const token = this.getToken();
+        if (!token) return false;
+
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1])); // decode JWT payload
+            const now = Math.floor(Date.now() / 1000);
+            return payload.exp && payload.exp > now;
+        } catch {
+            return false;
+        }
     }
 }

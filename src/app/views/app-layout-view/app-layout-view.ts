@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { PanelMenuToken, ToolbarToken } from '../../theme/tokens';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -11,6 +11,7 @@ import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-layout-view',
@@ -41,6 +42,8 @@ export class AppLayoutView {
       this.showLayout = !url.startsWith('/login');
     });
   }
+
+  private authService = inject(AuthService);
 
   menu = [
     { label: 'Departamento', icon: 'pi pi-building', items: [
@@ -74,6 +77,14 @@ export class AppLayoutView {
   }
 
   onLogout() {
-    this.router.navigate(['/login']);
+    this.authService.logout().subscribe({
+      next: () => {
+        this.router.navigateByUrl('/login', { replaceUrl: true });
+      },
+      error: () => {
+        this.authService['clearTokens']();
+        this.router.navigateByUrl('/login', { replaceUrl: true });
+      }
+    });
   }
 }

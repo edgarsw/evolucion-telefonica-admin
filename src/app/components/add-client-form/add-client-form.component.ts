@@ -46,28 +46,28 @@ export class AgregarClienteFormComponent {
 
     form.resetForm();
     this.newCliente = {
-      clienteactivo: '',
-      nombre: '',
-      rfc: '',
-      calle: '',
-      numexterior: '',
-      numinterior: '',
-      colonia: '',
-      estado: '',
-      ciudad: '',
-      municipio: '',
-      cp: '',
-      telefono: '',
-      correo: '',
-      precioconsigna: '',
-      latitud: '',
-      longitud: '',
-      idzona: '',
-      giro: '',
-      clasificacion: '',
-      referencia: '',
-      isfoto: undefined,
-      iscomercial: undefined
+      isActiveClient: 1,
+      name: '',
+      taxId: '',
+      street: '',
+      exteriorNumber: '',
+      interiorNumber: '',
+      neighborhood: '',
+      state: '',
+      city: '',
+      municipality: '',
+      postalCode: 0,
+      phone: '',
+      email: '',
+      consignmentPriceICC: '',
+      latitude: '',
+      longitude: '',
+      zoneId: '',
+      businessType: '',
+      reference: '',
+      hasPhoto: 0,
+      isCommercial: 0
     };
+
   }
 }
