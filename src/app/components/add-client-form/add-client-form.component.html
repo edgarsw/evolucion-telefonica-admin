@@ -1,4 +1,4 @@
-<form #clienteForm="ngForm" (ngSubmit)="onRegisterClick(clienteForm)" [class.submitted]="clienteForm.submitted">
+<form #clienteForm="ngForm" (ngSubmit)="addClient(clienteForm)" [class.submitted]="clienteForm.submitted">
     <div class="flex flex-wrap gap-6">
         <!-- Columna 1 -->
         <div class="flex-1 flex flex-col gap-3 min-w-[300px]">
@@ -78,7 +78,7 @@
 
             <div class="flex items-center h-[2rem] gap-2 pl-1">
                 <p-checkbox inputId="isCommercial" name="isCommercial" binary="true" [(ngModel)]="newCliente.isCommercial"></p-checkbox>
-                <label for="isCommercial">Cliente Comercial <span class="text-red-500">*</span></label>
+                <label for="isCommercial">Cliente Comercial</label>
             </div>
         </div>
 
@@ -128,6 +128,14 @@
                     autocomplete="off" class="w-full"
                     [ngClass]="{'p-invalid': clienteForm.submitted && clienteForm.controls['businessType'].invalid}" />
                 <label for="businessType">Giro <span class="text-red-500">*</span></label>
+            </p-floatlabel>
+
+            <p-floatlabel variant="on">
+                <p-select id="clasificacion" name="clasificacion" [(ngModel)]="newCliente.subBranchTypeId"
+                    [options]="tipoClientes" optionLabel="name" optionValue="name" class="w-full"
+                    [ngClass]="{'p-invalid': clienteForm.submitted && !newCliente.subBranchTypeId}"></p-select>
+                <label for="clasificacion">Tipo cliente <span class="text-red-500">*</span></label>
+                <input type="text" name="clasificacion_hidden" [(ngModel)]="newCliente.subBranchTypeId" required hidden />
             </p-floatlabel>
 
             <p-floatlabel variant="on">

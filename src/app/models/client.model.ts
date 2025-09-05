@@ -22,4 +22,5 @@ export interface Client {
   isCommercial?: number;
   isActiveClient: number;
   classification?: string;
+  subBranchTypeId: string,
 }

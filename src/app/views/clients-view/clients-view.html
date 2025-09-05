@@ -1,4 +1,3 @@
-<p-toast />
 <h1 class="flex text-3xl gap-3 mb-2">
   <span style="font-size: 2rem"></span>
   Gestión de Clientes
@@ -6,7 +5,12 @@
 
 <p-card>
   @if (!showAddForm) {
-  <app-clients-table [clientes]="clientes" (addRequested)="onAddRequested()">
+  <app-clients-table 
+    [clientes]="clientes" 
+    (addRequested)="onAddRequested()" 
+    (deleteRequested)="onDelete($event)" 
+    (updateRequested)="onUpdate($event)"
+  >
   </app-clients-table>
   } @else {
   <div class="mb-3">

@@ -7,10 +7,8 @@ import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
 import { AgregarClienteFormComponent } from '../../components/add-client-form/add-client-form.component';
 import { ClientsTableComponent } from '../../components/clients-table/clients-table.component';
-import { MessageService } from 'primeng/api';
-import { Toast } from 'primeng/toast';
-import { ClientService } from '../../services/client.service';
-import { StatusResponse } from '../../enums/status-response.enum';
+import { Client } from '../../models/client.model';
+import { ClientStore } from '../../stores/client.store';
 
 @Component({
   selector: 'app-clients',
@@ -22,39 +20,26 @@ import { StatusResponse } from '../../enums/status-response.enum';
     ButtonModule,
     AgregarClienteFormComponent,
     ClientsTableComponent,
-    Toast,
     ButtonModule,
-  ],
-  providers: [
-    MessageService
   ],
   templateUrl: './clients-view.html'
 })
 export class ClientesComponent {
   showAddForm = false;
-  clientes: any[] = [];
 
-  constructor(private messageService: MessageService) { }
-
-  private clientService = inject(ClientService)
+  private store = inject(ClientStore);
 
   ngOnInit(): void {
-    this.clientService.getClients().subscribe({
-      next: (res) => {
-        if (res.status === StatusResponse.SUCCESS) {
-          this.clientes = res.data;
-        }
-      },
-      error: (err) => console.error('Error fetching clients', err),
-    });
+    this.store.load();
   }
 
-  onRegister(cliente: any) {
-    console.log("cliente", cliente);
+  get clientes() {
+    return this.store.clients();
+  }
 
-    this.clientes = [...this.clientes, cliente];
+  onRegister(client: Client) {
+    this.store.add(client);
     this.showAddForm = false;
-    this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Cliente creado exitosamente' });
   }
 
   onAddRequested() {
@@ -63,5 +48,13 @@ export class ClientesComponent {
 
   onCancelAdd() {
     this.showAddForm = false;
+  }
+
+  onDelete(client: Client) {
+    this.store.delete(client.clientId);
+  }
+
+  onUpdate(client: Client) {
+    this.store.update(client);
   }
 }

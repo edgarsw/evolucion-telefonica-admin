@@ -41,7 +41,8 @@ export const newCliente = {
   businessType: 'Comercial',
   reference: 'Default reference',
   hasPhoto: 0,
-  isCommercial: 1
+  isCommercial: 1,
+  subBranchTypeId: 'A',
 };
 
 

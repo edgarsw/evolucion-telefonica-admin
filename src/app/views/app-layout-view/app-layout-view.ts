@@ -36,7 +36,9 @@ export class AppLayoutView {
   userMenuOpen = false;
   showLayout = true;
 
-  constructor(private router: Router) {
+  private router = inject(Router);
+
+  ngOnInit(): void {
     this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe((e: any) => {
       const url = e.urlAfterRedirects || e.url;
       this.showLayout = !url.startsWith('/login');

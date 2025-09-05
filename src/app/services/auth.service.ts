@@ -1,4 +1,4 @@
-import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
@@ -11,10 +11,8 @@ export class AuthService {
     private tokenKey = 'access_token';
     private refreshKey = 'refresh_token';
 
-    constructor(
-        private http: HttpClient,
-        @Inject(PLATFORM_ID) private platformId: Object
-    ) { }
+    private http = inject(HttpClient);
+    private platformId = inject(PLATFORM_ID);
 
     private setTokens(token: string, refreshToken: string): void {
         if (isPlatformBrowser(this.platformId)) {

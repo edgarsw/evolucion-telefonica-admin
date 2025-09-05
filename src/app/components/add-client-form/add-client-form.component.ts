@@ -37,7 +37,7 @@ export class AgregarClienteFormComponent {
   estados = estados;
   newCliente = newCliente;
 
-  onRegisterClick(form: NgForm) {
+  addClient(form: NgForm) {
     if (form.invalid) {
       form.control.markAllAsTouched();
       return;
@@ -66,7 +66,8 @@ export class AgregarClienteFormComponent {
       businessType: '',
       reference: '',
       hasPhoto: 0,
-      isCommercial: 0
+      isCommercial: 0,
+      subBranchTypeId: '',
     };
 
   }

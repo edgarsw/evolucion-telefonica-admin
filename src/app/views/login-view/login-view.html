@@ -1,9 +1,11 @@
-<p-toast></p-toast>
 <div class="w-screen h-screen bg-primary flex flex-col items-center">
+@if (isServer) {
+  <div class="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+} @else {
   <p-image class="mt-5" src="/images/logopositivo.png" alt="Image" width="500" />
   <p-image class="mt-10 mb-[-2.3rem]" src="/images/candado.png" alt="Image" width="80" />
 
-  <div class="border-2 border-white rounded-md p-8" >
+  <div class="border-2 border-white rounded-md p-8">
     <form (ngSubmit)="login()" class="flex flex-col gap-2 justify-center mt-10">
       <p-iftalabel>
         <input pInputText id="username" [(ngModel)]="username" name="username" autocomplete="off" />
@@ -17,4 +19,5 @@
       <p-button type="submit" class="place-self-center" label="Entrar"></p-button>
     </form>
   </div>
+}
 </div>

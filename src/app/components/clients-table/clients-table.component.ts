@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -9,7 +9,6 @@ import { DialogModule } from 'primeng/dialog';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ToastModule } from 'primeng/toast';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { SelectModule } from 'primeng/select';
 import { NgClass } from '@angular/common';
@@ -17,8 +16,9 @@ import { ciudades, estados, tipoClientes, zonas } from '../../utils/hardcode-dat
 import { InputNumberModule } from 'primeng/inputnumber';
 import { TextareaModule } from 'primeng/textarea';
 import { Client } from '../../models/client.model';
-
-
+import { RadioButton } from 'primeng/radiobutton';
+import { LimitTypeEnum } from '../../enums/limit-type.enum';
+import { DatePickerModule } from 'primeng/datepicker';
 
 @Component({
   selector: 'app-clients-table',
@@ -34,33 +34,32 @@ import { Client } from '../../models/client.model';
     DialogModule,
     FloatLabelModule,
     CheckboxModule,
-    ToastModule,
     ConfirmDialog,
     SelectModule,
     InputNumberModule,
-    TextareaModule
+    TextareaModule,
+    RadioButton,
+    DatePickerModule,
   ],
-  providers: [ConfirmationService, MessageService],
+  providers: [ConfirmationService],
   templateUrl: './clients-table.component.html',
 })
 export class ClientsTableComponent {
   @Input() clientes: Client[] = [];
   @Output() addRequested = new EventEmitter<void>();
+  @Output() deleteRequested = new EventEmitter<Client>();
+  @Output() updateRequested = new EventEmitter<Client>();
+
   zonas = zonas;
   tipoClientes = tipoClientes;
   ciudades = ciudades;
   estados = estados;
   searchValue: string | undefined;
-
-  constructor(
-    private confirmationService: ConfirmationService,
-    private messageService: MessageService
-  ) { }
-
-  globalFilterFields: (keyof Client)[] = [
-    'isActiveClient', 'name', 'taxId', 'street', 'exteriorNumber', 'interiorNumber',
-    'neighborhood', 'state', 'city', 'municipality', 'postalCode', 'phone', 'email'
-  ];
+  limitType!: string;
+  LimitTypeEnum = LimitTypeEnum;
+  temporalDate: Date | undefined;
+  minDate: Date | undefined;
+  maxDate: Date | undefined;
 
   editVisible = false;
   saldoVisible = false;
@@ -69,6 +68,18 @@ export class ClientsTableComponent {
   porcentajeValue: number | null = null;
   private editingRef: Client | null = null;
   editCliente: Client = this.emptyCliente();
+
+  globalFilterFields: (keyof Client)[] = [
+    'isActiveClient', 'name', 'taxId', 'street', 'exteriorNumber', 'interiorNumber',
+    'neighborhood', 'state', 'city', 'municipality', 'postalCode', 'phone', 'email'
+  ];
+
+  private messageService = inject(MessageService);
+  private confirmationService = inject(ConfirmationService);
+
+  ngOnInit() {
+    this.minDate = new Date();
+  }
 
   private emptyCliente(): Client {
     return {
@@ -94,6 +105,7 @@ export class ClientsTableComponent {
       hasPhoto: 0,
       isCommercial: 0,
       isActiveClient: 1,
+      subBranchTypeId: '',
     };
   }
 
@@ -125,14 +137,13 @@ export class ClientsTableComponent {
       return;
     }
     if (this.editingRef) {
-      Object.assign(this.editingRef, this.editCliente);
-      this.messageService.add({ severity: 'success', summary: 'Actualizado', detail: 'Cliente actualizado' });
+      this.updateRequested.emit(this.editCliente);
     }
     this.editVisible = false;
     this.editingRef = null;
   }
 
-  deleteProduct(event: Event, rowData: Client) {
+  deleteClient(event: Event, rowData: Client) {
     this.confirmationService.confirm({
       target: event.currentTarget as HTMLElement,
       message: '¿Eliminar este cliente?',
@@ -142,8 +153,7 @@ export class ClientsTableComponent {
       rejectButtonProps: { label: 'Cancelar', severity: 'secondary', outlined: true },
       acceptButtonProps: { label: 'Eliminar', severity: 'danger' },
       accept: () => {
-        this.clientes = this.clientes.filter(c => c !== rowData);
-        this.messageService.add({ severity: 'info', summary: 'Eliminado', detail: 'Cliente eliminado' });
+        this.deleteRequested.emit(rowData);   // ✅ bubble up to parent
       }
     });
   }

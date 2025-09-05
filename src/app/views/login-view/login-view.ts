@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, Inject, inject, PLATFORM_ID } from '@angular/core';
 import { PanelModule } from 'primeng/panel';
 import { PanelToken } from '../../theme/tokens';
 import { InputTextModule } from 'primeng/inputtext';
@@ -8,8 +8,9 @@ import { ButtonModule } from 'primeng/button';
 import { ImageModule } from 'primeng/image';
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
-import { ToastModule } from 'primeng/toast';
 import { AuthService } from '../../services/auth.service';
+import { isPlatformServer } from '@angular/common';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-login-view',
@@ -22,7 +23,6 @@ import { AuthService } from '../../services/auth.service';
     ImageModule,
     ToastModule,
   ],
-  providers: [MessageService],
   templateUrl: './login-view.html',
 })
 export class LoginView {
@@ -30,10 +30,16 @@ export class LoginView {
 
   username: string = "";
   password: string = "";
+  isServer = false;
 
-  constructor(private router: Router, private messageService: MessageService) { }
-
+  private messageService = inject(MessageService);
   private auth = inject(AuthService);
+  private router = inject(Router);
+  private platformId = inject(PLATFORM_ID);
+
+  ngOnInit(): void {
+    this.isServer = isPlatformServer(this.platformId);
+  }
 
   login() {
     this.auth.login(this.username, this.password).subscribe({

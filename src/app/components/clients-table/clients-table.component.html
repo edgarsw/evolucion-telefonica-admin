@@ -1,4 +1,3 @@
-<p-toast />
 <p-confirmdialog />
 <p-table #tablaClientes [value]="clientes" stripedRows size="small" [globalFilterFields]="globalFilterFields"
     [tableStyle]="{ 'min-width': '50rem' }" [scrollable]="true" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 30]">
@@ -60,7 +59,7 @@
                 <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true"
                     (click)="editClient(rowData)" size="small" />
                 <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
-                    (click)="deleteProduct($event, rowData)" size="small" />
+                    (click)="deleteClient($event, rowData)" size="small" />
             </td>
         </tr>
     </ng-template>
@@ -152,7 +151,7 @@
                 <div class="flex items-center h-[2rem] gap-2 pl-1">
                     <p-checkbox inputId="isCommercial" name="isCommercial" binary="true"
                         [(ngModel)]="editCliente.isCommercial"></p-checkbox>
-                    <label for="isCommercial">Cliente Comercial <span class="text-red-500">*</span></label>
+                    <label for="isCommercial">Cliente Comercial</label>
                 </div>
             </div>
 
@@ -205,12 +204,11 @@
                 </p-floatlabel>
 
                 <p-floatlabel variant="on">
-                    <p-select id="classification" name="classification" [(ngModel)]="editCliente.classification"
+                    <p-select id="clasificacion" name="clasificacion" [(ngModel)]="editCliente.subBranchTypeId"
                         [options]="tipoClientes" optionLabel="name" optionValue="name" class="w-full"
-                        [ngClass]="{'p-invalid': editForm.submitted && !editCliente.classification}"></p-select>
-                    <label for="classification">Tipo cliente <span class="text-red-500">*</span></label>
-                    <input type="text" name="classification_hidden" [(ngModel)]="editCliente.classification" required
-                        hidden />
+                        [ngClass]="{'p-invalid': editForm.submitted && !editCliente.subBranchTypeId}"></p-select>
+                    <label for="clasificacion">Tipo cliente <span class="text-red-500">*</span></label>
+                    <input type="text" name="clasificacion_hidden" [(ngModel)]="editCliente.subBranchTypeId" required hidden />
                 </p-floatlabel>
 
                 <p-floatlabel variant="on">
@@ -227,8 +225,8 @@
         </div>
     </form>
 </p-dialog>
-<p-dialog [(visible)]="saldoVisible" [modal]="true" header="Agregar Saldo"
-    [style]="{ width: '500px', maxWidth: '95vw' }" [draggable]="false" [resizable]="false" (onHide)="cancelSaldo()">
+<p-dialog [(visible)]="saldoVisible" [modal]="true" header="Agregar Saldo" class="overflow-y-visible"
+    [style]="{ width: '500px' }" [draggable]="false" [resizable]="false" (onHide)="cancelSaldo()">
     <form #saldoForm="ngForm" (ngSubmit)="confirmSaldo(saldoForm)" [class.submitted]="saldoForm.submitted"
         class="mt-2 flex flex-col gap-3">
 
@@ -258,6 +256,27 @@
             Campo requerido
         </small>
         }
+        <span class="font-semibold">Tipo de Límite</span>
+        <div class="flex items-center">
+            <p-radiobutton name="permanent" value="permanent" [(ngModel)]="limitType" inputId="permanent" />
+            <label for="permanent" class="ml-2">Permanente</label>
+        </div>
+        <div class="flex items-center">
+            <p-radiobutton name="temporal" value="temporal" [(ngModel)]="limitType" inputId="temporal" />
+            <label for="temporal" class="ml-2">Temporal</label>
+        </div>
+        @if (limitType === LimitTypeEnum.TEMPORAL) {
+        <p-datepicker [(ngModel)]="temporalDate" 
+            [iconDisplay]="'input'" 
+            [showIcon]="true" 
+            inputId="icondisplay" 
+            dateFormat="dd/mm/yy" 
+            [minDate]="minDate" 
+            appendTo="body" 
+            class="w-full" 
+        />
+        }
+
 
         <div class="mt-4 flex justify-end gap-2">
             <button pButton type="button" label="Cancelar" class="p-button-outlined" (click)="cancelSaldo()"></button>
