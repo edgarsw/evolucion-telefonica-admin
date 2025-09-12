@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CardModule } from 'primeng/card';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -10,7 +10,7 @@ import { SelectModule } from 'primeng/select';
 import { InputNumberModule } from 'primeng/inputnumber';
 
 import { NgClass } from '@angular/common';
-import { ciudades, estados, newCliente, tipoClientes, zonas } from '../../utils/hardcode-data.utils';
+import { ciudades, estados, newCliente, zonas } from '../../utils/hardcode-data.utils';
 
 @Component({
   selector: 'app-add-client-form',
@@ -30,9 +30,9 @@ import { ciudades, estados, newCliente, tipoClientes, zonas } from '../../utils/
   templateUrl: './add-client-form.component.html'
 })
 export class AgregarClienteFormComponent {
+  @Input() tipoClientes: string[] = [];
   @Output() register = new EventEmitter<any>();
   zonas = zonas;
-  tipoClientes = tipoClientes;
   ciudades = ciudades;
   estados = estados;
   newCliente = newCliente;

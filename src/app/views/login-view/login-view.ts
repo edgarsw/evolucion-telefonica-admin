@@ -44,7 +44,6 @@ export class LoginView {
   login() {
     this.auth.login(this.username, this.password).subscribe({
       next: () => {
-        console.log('Login success');
         this.router.navigate(['/clientes']);
       },
       error: err => {

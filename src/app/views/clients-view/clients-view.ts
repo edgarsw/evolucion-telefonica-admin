@@ -9,6 +9,7 @@ import { AgregarClienteFormComponent } from '../../components/add-client-form/ad
 import { ClientsTableComponent } from '../../components/clients-table/clients-table.component';
 import { Client } from '../../models/client.model';
 import { ClientStore } from '../../stores/client.store';
+import { SubBranchTypeService } from '../../services/sub-branch-type.service';
 
 @Component({
   selector: 'app-clients',
@@ -28,9 +29,21 @@ export class ClientesComponent {
   showAddForm = false;
 
   private store = inject(ClientStore);
+  private subBranchTypeService = inject(SubBranchTypeService);
+  tipoClientes: string[] = [];
 
   ngOnInit(): void {
     this.store.load();
+    this.subBranchTypeService.getAll().subscribe({
+      next: (res) => {
+        if (res.status === 'success' && res.data) {
+          this.tipoClientes = res.data;
+        }
+      },
+      error: (err) => {
+        console.error('Error fetching sub-branch types:', err);
+      },
+    });
   }
 
   get clientes() {

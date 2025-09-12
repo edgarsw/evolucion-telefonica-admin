@@ -131,11 +131,11 @@
             </p-floatlabel>
 
             <p-floatlabel variant="on">
-                <p-select id="clasificacion" name="clasificacion" [(ngModel)]="newCliente.subBranchTypeId"
-                    [options]="tipoClientes" optionLabel="name" optionValue="name" class="w-full"
+                <p-select id="subBranchTypeId" name="subBranchTypeId" [(ngModel)]="newCliente.subBranchTypeId"
+                    [options]="tipoClientes" optionLabel="subBranchTypeId" optionValue="subBranchTypeId" class="w-full"
                     [ngClass]="{'p-invalid': clienteForm.submitted && !newCliente.subBranchTypeId}"></p-select>
-                <label for="clasificacion">Tipo cliente <span class="text-red-500">*</span></label>
-                <input type="text" name="clasificacion_hidden" [(ngModel)]="newCliente.subBranchTypeId" required hidden />
+                <label for="subBranchTypeId">Tipo cliente <span class="text-red-500">*</span></label>
+                <input type="text" name="subBranchTypeId_hidden" [(ngModel)]="newCliente.subBranchTypeId" required hidden />
             </p-floatlabel>
 
             <p-floatlabel variant="on">

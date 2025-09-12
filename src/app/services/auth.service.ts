@@ -48,12 +48,6 @@ export class AuthService {
         );
     }
 
-    loginEmployee(username: string, password: string) {
-        return this.http.post<any>(`${this.apiAuth}/login-employee`, { username, password }).pipe(
-            tap(res => this.setTokens(res.token, res.refreshToken))
-        );
-    }
-
     getRoles() {
         return this.http.get(`${this.apiAuth}/roles`);
     }
@@ -77,11 +71,28 @@ export class AuthService {
         if (!token) return false;
 
         try {
-            const payload = JSON.parse(atob(token.split('.')[1])); // decode JWT payload
+            const payload = JSON.parse(atob(token.split('.')[1]));
             const now = Math.floor(Date.now() / 1000);
             return payload.exp && payload.exp > now;
         } catch {
             return false;
         }
+    }
+
+    getCurrentUser(): any | null {
+        const token = this.getToken();
+        if (!token) return null;
+
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return payload;
+        } catch {
+            return null;
+        }
+    }
+
+    getEmployeeId(): number | null {
+        const user = this.getCurrentUser();
+        return user?.employeeId ?? null;
     }
 }

@@ -1,6 +1,7 @@
 <p-confirmdialog />
 <p-table #tablaClientes [value]="clientes" stripedRows size="small" [globalFilterFields]="globalFilterFields"
-    [tableStyle]="{ 'min-width': '50rem' }" [scrollable]="true" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 30]">
+    [tableStyle]="{ 'min-width': '50rem' }" [scrollable]="true" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 30]"
+    dataKey="clientId" [expandedRowKeys]="expandedRows" (onRowExpand)="onRowExpand($event)" (onRowCollapse)="onRowCollapse($event)">
 
     <ng-template #caption>
         <div class="flex justify-between">
@@ -21,6 +22,7 @@
 
     <ng-template #header>
         <tr>
+            <th style="width: 5rem"></th>
             <th class="whitespace-nowrap">Activo</th>
             <th class="whitespace-nowrap">Razón Social</th>
             <th class="whitespace-nowrap">RFC</th>
@@ -37,36 +39,102 @@
             <th pFrozenColumn alignFrozen="right"></th>
         </tr>
     </ng-template>
-
-    <ng-template #body let-rowData>
+    <ng-template #body let-client let-expanded="expanded">
         <tr>
-            <td class="whitespace-nowrap">{{ rowData.isActiveClient }}</td>
-            <td class="whitespace-nowrap">{{ rowData.name }}</td>
-            <td class="whitespace-nowrap">{{ rowData.taxId }}</td>
-            <td class="whitespace-nowrap">{{ rowData.street }}</td>
-            <td class="whitespace-nowrap">{{ rowData.exteriorNumber }}</td>
-            <td class="whitespace-nowrap">{{ rowData.interiorNumber }}</td>
-            <td class="whitespace-nowrap">{{ rowData.neighborhood }}</td>
-            <td class="whitespace-nowrap">{{ rowData.state }}</td>
-            <td class="whitespace-nowrap">{{ rowData.city }}</td>
-            <td class="whitespace-nowrap">{{ rowData.municipality }}</td>
-            <td class="whitespace-nowrap">{{ rowData.postalCode }}</td>
-            <td class="whitespace-nowrap">{{ rowData.phone }}</td>
-            <td class="whitespace-nowrap">{{ rowData.email }}</td>
+            <td>
+                <p-button type="button" pRipple [pRowToggler]="client" [text]="true" severity="secondary" [rounded]="true" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" />
+            </td>
+            <td class="whitespace-nowrap">{{ client.isActiveClient }}</td>
+            <td class="whitespace-nowrap">{{ client.name }}</td>
+            <td class="whitespace-nowrap">{{ client.taxId }}</td>
+            <td class="whitespace-nowrap">{{ client.street }}</td>
+            <td class="whitespace-nowrap">{{ client.exteriorNumber }}</td>
+            <td class="whitespace-nowrap">{{ client.interiorNumber }}</td>
+            <td class="whitespace-nowrap">{{ client.neighborhood }}</td>
+            <td class="whitespace-nowrap">{{ client.state }}</td>
+            <td class="whitespace-nowrap">{{ client.city }}</td>
+            <td class="whitespace-nowrap">{{ client.municipality }}</td>
+            <td class="whitespace-nowrap">{{ client.postalCode }}</td>
+            <td class="whitespace-nowrap">{{ client.phone }}</td>
+            <td class="whitespace-nowrap">{{ client.email }}</td>
             <td class="whitespace-nowrap" pFrozenColumn alignFrozen="right">
-                <p-button icon="pi pi-dollar" severity="success" class="mr-2" [rounded]="true" [outlined]="true"
-                    (click)="addSaldo(rowData)" size="small" />
-                <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true"
-                    (click)="editClient(rowData)" size="small" />
+                <p-button icon="pi pi-cog" severity="help" class="mr-1" [rounded]="true" [outlined]="true"
+                    pTooltip="Configuración de Cliente" tooltipPosition="top"
+                    (click)="openActivationSettings(client)" size="small" />
+                <p-button icon="pi pi-dollar" severity="success" class="mr-1" [rounded]="true" [outlined]="true"
+                    pTooltip="Agregar Saldo" tooltipPosition="top"
+                    (click)="openAddSaldo(client)" size="small" />
+                <p-button icon="pi pi-pencil" class="mr-1" [rounded]="true" [outlined]="true"
+                    pTooltip="Editar Cliente" tooltipPosition="top"
+                    (click)="editClient(client)" size="small" />
                 <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
-                    (click)="deleteClient($event, rowData)" size="small" />
+                    pTooltip="Eliminar Cliente" tooltipPosition="top"
+                    (click)="deleteClient($event, client)" size="small" />
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template #expandedrow let-client>
+        <tr>
+            <td colspan="7">
+                <div class="p-4">
+                    <p-table [value]="client.subClients" dataKey="id" size="small">
+                        <ng-template #header>
+                            <tr>
+                                <th pSortableColumn="isActive">
+                                    <div class="flex items-center justify-center gap-2">
+                                        Activo
+                                        <p-sortIcon field="isActive" />
+                                    </div>
+                                </th>
+                                <th pSortableColumn="name">
+                                    <div class="flex items-center gap-2">
+                                        Nombre
+                                        <p-sortIcon field="name" />
+                                    </div>
+                                </th>
+                                <th pSortableColumn="username">
+                                    <div class="flex items-center gap-2">
+                                        Nombre de Usuario
+                                        <p-sortIcon field="username" />
+                                    </div>
+                                </th>
+                                <th pSortableColumn="email">
+                                    <div class="flex items-center gap-2">
+                                        Correo
+                                        <p-sortIcon field="email" />
+                                    </div>
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template #body let-subclient>
+                            <tr>
+                                <td>
+                                    <div class="flex place-content-center">
+                                        <p-checkbox 
+                                        binary="true" 
+                                        [ngModel]="subclient.isActive === 1" 
+                                        (onChange)="onToggleSubClientActive(subclient, $event.checked)" />
+                                    </div>
+                                </td>
+                                <td>{{ subclient.name }}</td>
+                                <td>{{ subclient.username }}</td>
+                                <td>{{ subclient.email }}</td>
+                            </tr>
+                        </ng-template>
+                        <ng-template #emptymessage>
+                            <tr>
+                                <td colspan="6">Este cliente no tiene subclientes.</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
             </td>
         </tr>
     </ng-template>
 </p-table>
 
 <!-- EDIT CLIENT DIALOG -->
-<p-dialog [(visible)]="editVisible" [modal]="true" header="Editar cliente"
+<p-dialog [(visible)]="editVisible" [modal]="true" header="Editar cliente" appendTo="body"
     [style]="{ width: '900px', maxWidth: '95vw' }" [draggable]="false" [resizable]="false" (onHide)="cancelEdit()">
 
     <form #editForm="ngForm" (ngSubmit)="saveEdit(editForm)" [class.submitted]="editForm.submitted" class="mt-2">
@@ -204,11 +272,11 @@
                 </p-floatlabel>
 
                 <p-floatlabel variant="on">
-                    <p-select id="clasificacion" name="clasificacion" [(ngModel)]="editCliente.subBranchTypeId"
-                        [options]="tipoClientes" optionLabel="name" optionValue="name" class="w-full"
+                    <p-select id="subBranchTypeId" name="subBranchTypeId" [(ngModel)]="editCliente.subBranchTypeId"
+                        [options]="tipoClientes" optionLabel="subBranchTypeId" optionValue="subBranchTypeId" class="w-full"
                         [ngClass]="{'p-invalid': editForm.submitted && !editCliente.subBranchTypeId}"></p-select>
-                    <label for="clasificacion">Tipo cliente <span class="text-red-500">*</span></label>
-                    <input type="text" name="clasificacion_hidden" [(ngModel)]="editCliente.subBranchTypeId" required hidden />
+                    <label for="subBranchTypeId">Tipo de cliente <span class="text-red-500">*</span></label>
+                    <input type="text" name="subBranchTypeId_hidden" [(ngModel)]="editCliente.subBranchTypeId" required hidden />
                 </p-floatlabel>
 
                 <p-floatlabel variant="on">
@@ -225,15 +293,15 @@
         </div>
     </form>
 </p-dialog>
-<p-dialog [(visible)]="saldoVisible" [modal]="true" header="Agregar Saldo" class="overflow-y-visible"
+<p-dialog [(visible)]="saldoDialogVisible" [modal]="true" header="Agregar Saldo" class="overflow-y-visible" appendTo="body"
     [style]="{ width: '500px' }" [draggable]="false" [resizable]="false" (onHide)="cancelSaldo()">
-    <form #saldoForm="ngForm" (ngSubmit)="confirmSaldo(saldoForm)" [class.submitted]="saldoForm.submitted"
-        class="mt-2 flex flex-col gap-3">
+    <form #saldoForm="ngForm" (ngSubmit)="confirmSaldo($event, saldoForm)"
+        [class.submitted]="saldoForm.submitted" class="mt-2 flex flex-col gap-3">
 
         <!-- Saldo -->
         <p-floatlabel variant="on">
-            <p-inputnumber class="w-full" id="saldo" name="saldo" [(ngModel)]="saldoValue" mode="decimal" prefix="$ "
-                locale="es-MX" required
+            <p-inputnumber class="w-full" id="saldo" name="saldo" [(ngModel)]="balanceValue" mode="decimal" prefix="$ "
+                locale="es-MX" required [min]="0" [max]="10000"
                 [ngClass]="{'p-invalid': saldoForm.submitted && saldoForm.controls['saldo'].invalid}">
             </p-inputnumber>
             <label for="saldo">Saldo <span class="text-red-500">*</span></label>
@@ -243,43 +311,89 @@
             Campo requerido
         </small>
         }
-
-        <p-floatlabel variant="on">
-            <p-inputnumber class="w-full" id="porcentaje" name="porcentaje" [(ngModel)]="porcentajeValue" [min]="0"
-                [max]="100" suffix="%" required
-                [ngClass]="{'p-invalid': saldoForm.submitted && saldoForm.controls['porcentaje'].invalid}">
-            </p-inputnumber>
-            <label for="porcentaje">Porcentaje <span class="text-red-500">*</span></label>
-        </p-floatlabel>
-        @if (saldoForm.submitted && saldoForm.controls['porcentaje'].invalid) {
-        <small class="text-red-500 mt-[-10px]">
-            Campo requerido
-        </small>
-        }
-        <span class="font-semibold">Tipo de Límite</span>
-        <div class="flex items-center">
-            <p-radiobutton name="permanent" value="permanent" [(ngModel)]="limitType" inputId="permanent" />
-            <label for="permanent" class="ml-2">Permanente</label>
-        </div>
-        <div class="flex items-center">
-            <p-radiobutton name="temporal" value="temporal" [(ngModel)]="limitType" inputId="temporal" />
-            <label for="temporal" class="ml-2">Temporal</label>
-        </div>
-        @if (limitType === LimitTypeEnum.TEMPORAL) {
-        <p-datepicker [(ngModel)]="temporalDate" 
-            [iconDisplay]="'input'" 
-            [showIcon]="true" 
-            inputId="icondisplay" 
-            dateFormat="dd/mm/yy" 
-            [minDate]="minDate" 
-            appendTo="body" 
-            class="w-full" 
-        />
-        }
-
-
         <div class="mt-4 flex justify-end gap-2">
             <button pButton type="button" label="Cancelar" class="p-button-outlined" (click)="cancelSaldo()"></button>
+            <button pButton type="submit" label="Continuar"></button>
+        </div>
+    </form>
+</p-dialog>
+
+<p-dialog [(visible)]="configurationVisible" [modal]="true" header="Configuración de Cliente" class="overflow-y-visible"
+    appendTo="body" [style]="{ width: '500px' }" [draggable]="false" [resizable]="false"
+    (onHide)="cancelConfiguration()">
+
+    <form #configurationForm="ngForm" (ngSubmit)="confirmConfiguration($event, configurationForm)">
+
+        <div class="flex flex-col mt-3 mb-3">
+            <p class="text-xl">Saldo</p>
+            <div class="mt-4">
+                <p-floatlabel variant="on">
+                    <p-inputnumber class="w-full" id="porcentaje" name="porcentaje" [(ngModel)]="porcentajeValue"
+                        [min]="0" [max]="9" suffix="%" required
+                        [ngClass]="{'p-invalid': configurationForm.submitted && configurationForm.controls['porcentaje']?.invalid}">
+                    </p-inputnumber>
+                    <label for="porcentaje">Porcentaje Extra de Recarga <span class="text-red-500">*</span></label>
+                </p-floatlabel>
+                @if (configurationForm.submitted && configurationForm.controls['porcentaje']?.invalid) {
+                <small class="text-red-500 mt-[-10px]">Campo requerido</small>
+                }
+            </div>
+        </div>
+        <hr class="my-4 border-t-1 border-gray-400" />
+        <div class="flex flex-col mt-3 mb-3">
+            <p class="text-xl">Activaciones SIM</p>
+            <div class="mt-4">
+                <p-floatlabel variant="on">
+                    <p-inputnumber [disabled]="isTemporalLimit" class="w-full" id="limitCount" name="limitCount"
+                        [(ngModel)]="permanentLimitValue" [min]="0" [max]="9999" required
+                        [ngClass]="{'p-invalid': configurationForm.submitted && configurationForm.controls['limitCount']?.invalid}">
+                    </p-inputnumber>
+                    <label for="limitCount">Activaciones permanentes por Día <span class="text-red-500">*</span></label>
+                </p-floatlabel>
+                @if (configurationForm.submitted && configurationForm.controls['limitCount']?.invalid) {
+                <small class="text-red-500 mt-[-10px]">Campo requerido</small>
+                }
+            </div>
+
+            <div class="flex flex-col gap-2 mt-3">
+                <div class="flex items-center">
+                    <p-checkbox name="temporal" value="temporal" [(ngModel)]="isTemporalLimit" [binary]="true"
+                        inputId="temporal" />
+                    <label for="temporal" class="ml-2">Límite de Activaciones Temporal</label>
+                </div>
+
+                @if (isTemporalLimit) {
+                <p-floatlabel variant="on">
+                    <p-inputnumber class="w-full" id="temporalLimitCount" name="temporalLimitCount"
+                        [(ngModel)]="temporalLimitValue" [min]="0" [max]="9999" required
+                        [ngClass]="{'p-invalid': configurationForm.submitted && configurationForm.controls['temporalLimitCount']?.invalid}">
+                    </p-inputnumber>
+                    <label for="temporalLimitCount">Activaciones temporales por Día <span
+                            class="text-red-500">*</span></label>
+                </p-floatlabel>
+                @if (configurationForm.submitted && configurationForm.controls['temporalLimitCount']?.invalid) {
+                <small class="text-red-500 mt-[-10px]">Campo requerido</small>
+                }
+
+                <p-floatlabel variant="on">
+                    <p-datepicker [(ngModel)]="temporalDate" name="temporalDate" [iconDisplay]="'input'"
+                        [showIcon]="true" inputId="icondisplay" dateFormat="dd/mm/yy" [minDate]="minDate"
+                        appendTo="body" class="w-full" [required]="isTemporalLimit"
+                        [ngClass]="{'p-invalid': configurationForm.submitted && configurationForm.controls['temporalDate']?.invalid}">
+                    </p-datepicker>
+                    <label for="temporalDate">Fecha Límite de Activaciones Temporales <span
+                            class="text-red-500">*</span></label>
+                </p-floatlabel>
+                @if (configurationForm.submitted && configurationForm.controls['temporalDate']?.invalid) {
+                <small class="text-red-500 mt-[-10px]">Campo requerido</small>
+                }
+                }
+            </div>
+        </div>
+
+        <div class="mt-4 flex justify-end gap-2">
+            <button pButton type="button" label="Cancelar" class="p-button-outlined"
+                (click)="cancelConfiguration()"></button>
             <button pButton type="submit" label="Confirmar"></button>
         </div>
     </form>

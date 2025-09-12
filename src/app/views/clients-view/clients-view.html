@@ -7,6 +7,7 @@
   @if (!showAddForm) {
   <app-clients-table 
     [clientes]="clientes" 
+    [tipoClientes]="tipoClientes"
     (addRequested)="onAddRequested()" 
     (deleteRequested)="onDelete($event)" 
     (updateRequested)="onUpdate($event)"
@@ -18,7 +19,7 @@
     </p-button>
   </div>
 
-  <app-add-client-form (register)="onRegister($event)">
+  <app-add-client-form [tipoClientes]="tipoClientes" (register)="onRegister($event)">
   </app-add-client-form>
   }
 </p-card>
