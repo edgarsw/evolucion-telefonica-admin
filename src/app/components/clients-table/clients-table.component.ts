@@ -273,12 +273,13 @@ export class ClientsTableComponent {
     let newBalance = this.balanceValue ?? 0;
     if (hasExtra) {
       newBalance = newBalance + (newBalance * percentage) / 100;
+      newBalance = Number(newBalance.toFixed(2));
     }
     const message = hasExtra
-      ? `Se va a ingresar la cantidad de $${newBalance}, debido a que este usuario cuenta con ${percentage}% adicional. 
-        ¿Desea confirmar la transacción?`
-      : `Se va a ingresar la cantidad de $${newBalance}. ¿Desea confirmar la transacción?`;
-
+      ? `Se procederá a abonar <strong>$${newBalance}</strong>, monto que ya contempla el <strong>${percentage}%</strong> adicional asignado al cliente. <br>
+    ¿Desea continuar con la operación?`
+      : `Se procederá a abonar <strong>$${newBalance}</strong>. <br>
+    ¿Desea continuar con la operación?`;
     this.confirmationService.confirm({
       target: event.currentTarget as HTMLElement,
       message,

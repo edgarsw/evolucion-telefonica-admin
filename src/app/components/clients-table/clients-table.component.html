@@ -25,10 +25,10 @@
             <th style="width: 5rem"></th>
             <th class="whitespace-nowrap">Activo</th>
             <th class="whitespace-nowrap">Razón Social</th>
+            <th class="whitespace-nowrap">Saldo</th>
             <th class="whitespace-nowrap">RFC</th>
             <th class="whitespace-nowrap">Calle</th>
             <th class="whitespace-nowrap">N° Exterior</th>
-            <th class="whitespace-nowrap">N° Interior</th>
             <th class="whitespace-nowrap">Colonia</th>
             <th class="whitespace-nowrap">Estado</th>
             <th class="whitespace-nowrap">Ciudad</th>
@@ -41,15 +41,20 @@
     </ng-template>
     <ng-template #body let-client let-expanded="expanded">
         <tr>
+            @if (client.subClients.length > 0) {
             <td>
-                <p-button type="button" pRipple [pRowToggler]="client" [text]="true" severity="secondary" [rounded]="true" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" />
+                <p-button type="button" size="small" pRipple [pRowToggler]="client" [text]="true" severity="secondary" [rounded]="true" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" />
             </td>
+            } @else {
+            <td>
+            </td>
+            }
             <td class="whitespace-nowrap">{{ client.isActiveClient }}</td>
             <td class="whitespace-nowrap">{{ client.name }}</td>
+            <td class="whitespace-nowrap">${{ client.balance ?? ' - ' }}</td>
             <td class="whitespace-nowrap">{{ client.taxId }}</td>
             <td class="whitespace-nowrap">{{ client.street }}</td>
             <td class="whitespace-nowrap">{{ client.exteriorNumber }}</td>
-            <td class="whitespace-nowrap">{{ client.interiorNumber }}</td>
             <td class="whitespace-nowrap">{{ client.neighborhood }}</td>
             <td class="whitespace-nowrap">{{ client.state }}</td>
             <td class="whitespace-nowrap">{{ client.city }}</td>
@@ -58,7 +63,7 @@
             <td class="whitespace-nowrap">{{ client.phone }}</td>
             <td class="whitespace-nowrap">{{ client.email }}</td>
             <td class="whitespace-nowrap" pFrozenColumn alignFrozen="right">
-                <p-button icon="pi pi-cog" severity="help" class="mr-1" [rounded]="true" [outlined]="true"
+                <p-button icon="pi pi-cog" severity="secondary" class="mr-1" [rounded]="true" [outlined]="true"
                     pTooltip="Configuración de Cliente" tooltipPosition="top"
                     (click)="openActivationSettings(client)" size="small" />
                 <p-button icon="pi pi-dollar" severity="success" class="mr-1" [rounded]="true" [outlined]="true"
