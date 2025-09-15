@@ -7,7 +7,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-    container_name: angular
+    container_name: neixt-evolution-profe
     restart: always
     networks:
       - proxy

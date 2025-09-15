@@ -3,16 +3,21 @@ pipeline {
   options { timestamps(); skipDefaultCheckout() }
 
   parameters {
-    string(name: 'TAG', defaultValue: 'latest', description: 'Tag de la imagen')
+    string(name: 'TAG', defaultValue: 'latest', description: 'Tag de la imagen Docker')
     choice(name: 'ENV', choices: ['dev', 'prod'], description: 'Entorno de despliegue')
-    string(name: 'REMOTE_DIR', defaultValue: '/home/neixt/evolution-profe', description: 'Ruta en el servidor remoto')
-    booleanParam(name: 'CLEANUP_REMOTE', defaultValue: true, description: 'docker image prune -af en el remoto')
+    string(name: 'REMOTE_DIR', defaultValue: '/home/neixt/evolution-profe', description: 'Ruta de despliegue en el servidor remoto')
+    booleanParam(name: 'CLEANUP_REMOTE', defaultValue: true, description: 'Ejecutar docker image prune -af en el remoto')
   }
 
   environment {
+    // BuildKit para docker build
     DOCKER_BUILDKIT = '1'
     COMPOSE_DOCKER_CLI_BUILD = '1'
+
+    // Nombre de la imagen (puede incluir repo/namespace si quieres)
     USER_IMG = 'neixt-evolution-profe'
+
+    // Normaliza TAG con default si viene vacío
     TAG = "${params.TAG ?: 'latest'}"
   }
 
@@ -23,24 +28,30 @@ pipeline {
         checkout scm
       }
     }
-stage('Build evolution-profe') {
-  steps {
-    sh '''
-      set -e
-      if [ ! -f Dockerfile ]; then
-        echo "ERROR: No se encontrÃ³ el Dockerfile en $(pwd)"
-        ls -la
-        exit 1
-      fi
 
-      docker build \
-        -f Dockerfile \
-        -t ${USER_IMG}:${TAG} .
-    '''
-  }
-}
+    stage('Build image') {
+      steps {
+        sh '''
+          set -e
+          echo "===> Variables: USER_IMG=${USER_IMG}  TAG=${TAG}  ENV=${ENV}"
+          if [ ! -f Dockerfile ]; then
+            echo "ERROR: No se encontró el Dockerfile en $(pwd)"
+            ls -la
+            exit 1
+          fi
 
+          # Asegura default también a nivel shell
+          : "${TAG:=latest}"
+          echo "Usando TAG=${TAG}"
 
+          docker build \
+            -f Dockerfile \
+            -t "${USER_IMG}:${TAG}" .
+          
+          docker images | grep "${USER_IMG}" || true
+        '''
+      }
+    }
 
     stage('Transferir imagen al remoto') {
       steps {
@@ -48,32 +59,38 @@ stage('Build evolution-profe') {
           usernamePassword(credentialsId: 'NEIXT-IKNITL-USER', usernameVariable: 'REMOTE_USER', passwordVariable: 'REMOTE_PASS'),
           string(credentialsId: 'NEIXT-IKNITL-IP', variable: 'AWS_HOST')
         ]) {
+          // Nota: hay warnings por interpolación Groovy, es normal; se puede
+          // mitigar usando withEnv + sh '...' pero aquí mantenemos simpleza.
           sh """
             set -e
-            docker save ${USER_IMG}:${TAG} | gzip | \
-              sshpass -p "$REMOTE_PASS" ssh -o StrictHostKeyChecking=no $REMOTE_USER@$AWS_HOST 'gunzip | docker load'
+            echo "===> Enviando imagen ${USER_IMG}:${TAG} a ${AWS_HOST}"
+            docker save "${USER_IMG}:${TAG}" | gzip | \\
+              sshpass -p "$REMOTE_PASS" ssh -o StrictHostKeyChecking=no "$REMOTE_USER@$AWS_HOST" 'gunzip | docker load'
           """
         }
       }
     }
 
-stage('Empaquetar compose y env') {
-  steps {
-    withCredentials([file(credentialsId: 'neixt-iknitl-env', variable: 'ENV_FILE')]) {
-      sh """
-        set -e
-        cat > docker-compose.ci.override.yml <<'YAML'
+    stage('Empaquetar compose y env') {
+      steps {
+        withCredentials([file(credentialsId: 'neixt-iknitl-env', variable: 'ENV_FILE')]) {
+          sh """
+            set -e
+            echo "===> Generando docker-compose.ci.override.yml con image concreta"
+            # MUY IMPORTANTE: el nombre del servicio DEBE coincidir con el de docker-compose.yml base
+            cat > docker-compose.ci.override.yml <<YAML
 version: "3.9"
 services:
   evolution-profe:
     image: ${USER_IMG}:${TAG}
 YAML
-        cp "${ENV_FILE}" ./.env.ci
-      """
-    }
-  }
-}
 
+            echo "===> Copiando env desde credencial a ./.env.ci"
+            cp "${ENV_FILE}" ./.env.ci
+          """
+        }
+      }
+    }
 
     stage('Deploy remoto') {
       steps {
@@ -83,15 +100,23 @@ YAML
         ]) {
           sh """
             set -e
-            sshpass -p "$REMOTE_PASS" ssh -o StrictHostKeyChecking=no $REMOTE_USER@$AWS_HOST "mkdir -p '${REMOTE_DIR}'"
-            sshpass -p "$REMOTE_PASS" scp -o StrictHostKeyChecking=no docker-compose.yml docker-compose.ci.override.yml $REMOTE_USER@$AWS_HOST:'${REMOTE_DIR}/'
-            sshpass -p "$REMOTE_PASS" scp -o StrictHostKeyChecking=no .env.ci $REMOTE_USER@$AWS_HOST:'${REMOTE_DIR}/.env'
-            sshpass -p "$REMOTE_PASS" ssh -o StrictHostKeyChecking=no $REMOTE_USER@$AWS_HOST "
+            echo "===> Creando carpeta remota ${REMOTE_DIR} en ${AWS_HOST}"
+            sshpass -p "$REMOTE_PASS" ssh -o StrictHostKeyChecking=no "$REMOTE_USER@$AWS_HOST" "mkdir -p '${REMOTE_DIR}'"
+
+            echo "===> Enviando compose base, override y .env"
+            sshpass -p "$REMOTE_PASS" scp -o StrictHostKeyChecking=no docker-compose.yml docker-compose.ci.override.yml "$REMOTE_USER@$AWS_HOST:'${REMOTE_DIR}/'"
+            sshpass -p "$REMOTE_PASS" scp -o StrictHostKeyChecking=no .env.ci "$REMOTE_USER@$AWS_HOST:'${REMOTE_DIR}/.env'"
+
+            echo "===> Levantando servicios con imagen ya cargada (sin build)"
+            sshpass -p "$REMOTE_PASS" ssh -o StrictHostKeyChecking=no "$REMOTE_USER@$AWS_HOST" "
               set -e
               cd '${REMOTE_DIR}'
               export DOCKER_BUILDKIT=1
               export NODE_ENV=${ENV == 'prod' ? 'production' : 'development'}
-              docker compose -f docker-compose.yml -f docker-compose.ci.override.yml up -d --remove-orphans --pull=never
+              # IMPORTANTE: --no-build para evitar que componga intente build en el remoto
+              docker compose -f docker-compose.yml -f docker-compose.ci.override.yml up -d \\
+                --remove-orphans --pull=never --no-build
+
               ${CLEANUP_REMOTE ? "docker image prune -af || true" : "true"}
               docker system df || true
             "
@@ -99,11 +124,11 @@ YAML
         }
       }
     }
-  } // <-- stages
+  } // stages
 
   post {
     success {
-      echo "Despliegue completado en REMOTE_DIR=${params.REMOTE_DIR} con TAG=${params.TAG}"
+      echo "✔ Despliegue OK en REMOTE_DIR=${params.REMOTE_DIR} con TAG=${env.TAG}"
     }
     always {
       cleanWs(deleteDirs: true)
