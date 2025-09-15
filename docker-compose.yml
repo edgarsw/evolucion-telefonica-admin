@@ -1,0 +1,15 @@
+networks:
+  proxy:
+    external: true
+
+services:
+  angular:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: angular
+    restart: always
+    networks:
+      - proxy
+    expose:
+      - "4000" 
