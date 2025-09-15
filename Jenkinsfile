@@ -19,9 +19,7 @@ pipeline {
   stages {
 
     stage('Checkout') {
-      steps {
-        checkout scm
-      }
+      steps { checkout scm }
     }
 
     stage('Build image') {
@@ -39,10 +37,7 @@ pipeline {
           : "${TAG:=latest}"
           echo "Usando TAG=${TAG}"
 
-          docker build \
-            -f Dockerfile \
-            -t "${USER_IMG}:${TAG}" .
-
+          docker build -f Dockerfile -t "${USER_IMG}:${TAG}" .
           docker images | grep "${USER_IMG}" || true
         '''
       }
@@ -69,12 +64,14 @@ pipeline {
         withCredentials([file(credentialsId: 'neixt-iknitl-env', variable: 'ENV_FILE')]) {
           sh """
             set -e
-            echo "===> Generando docker-compose.ci.override.yml con image concreta"
-            # IMPORTANTE: el nombre del servicio debe coincidir con el del compose base
+            echo "===> Generando docker-compose.ci.override.yml con image concreta para ambos posibles servicios"
+            # IMPORTANTE: los nombres deben coincidir con los del compose base
             cat > docker-compose.ci.override.yml <<YAML
 version: "3.9"
 services:
-  neixt-evolution-profe:
+  evolution-profe:
+    image: ${USER_IMG}:${TAG}
+  evolution-profe-angular:
     image: ${USER_IMG}:${TAG}
 YAML
 
@@ -100,18 +97,30 @@ YAML
             sshpass -p "$REMOTE_PASS" scp -o StrictHostKeyChecking=no docker-compose.yml docker-compose.ci.override.yml "$REMOTE_USER@$AWS_HOST:${REMOTE_DIR}/"
             sshpass -p "$REMOTE_PASS" scp -o StrictHostKeyChecking=no .env.ci "$REMOTE_USER@$AWS_HOST:${REMOTE_DIR}/.env"
 
-            echo "===> Levantando servicios con imagen ya cargada (sin build)"
-            sshpass -p "$REMOTE_PASS" ssh -o StrictHostKeyChecking=no "$REMOTE_USER@$AWS_HOST" "
+            echo "===> Ajustes y despliegue en remoto"
+            sshpass -p "$REMOTE_PASS" ssh -o StrictHostKeyChecking=no "$REMOTE_USER@$AWS_HOST" '
               set -e
               cd ${REMOTE_DIR}
+
               export DOCKER_BUILDKIT=1
-              export NODE_ENV=${ENV == 'prod' ? 'production' : 'development'}
+              export NODE_ENV=${ENV == "prod" ? "production" : "development"}
+              export COMPOSE_PROJECT_NAME=evolution-profe
+
+              echo "-> Etiquetando compatibilidad (por si el compose pide evolution-profe-angular:latest)"
+              if docker image inspect ${USER_IMG}:${TAG} >/dev/null 2>&1; then
+                docker tag ${USER_IMG}:${TAG} evolution-profe-angular:latest || true
+              fi
+
+              echo "-> Config final (docker compose config):"
+              docker compose -f docker-compose.yml -f docker-compose.ci.override.yml config | sed -n "1,200p" || true
+
+              echo "-> Levantando servicios (sin build)"
               docker compose -f docker-compose.yml -f docker-compose.ci.override.yml up -d \\
                 --remove-orphans --pull=never --no-build
 
               ${CLEANUP_REMOTE ? "docker image prune -af || true" : "true"}
               docker system df || true
-            "
+            '
           """
         }
       }
