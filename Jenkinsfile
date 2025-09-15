@@ -13,6 +13,7 @@ pipeline {
     DOCKER_BUILDKIT = '1'
     COMPOSE_DOCKER_CLI_BUILD = '1'
     USER_IMG = 'neixt-evolution-profe'
+    TAG = "${params.TAG ?: 'latest'}"
   }
 
   stages {
