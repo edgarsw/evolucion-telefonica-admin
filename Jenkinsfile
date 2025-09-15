@@ -10,14 +10,9 @@ pipeline {
   }
 
   environment {
-    // BuildKit para docker build
     DOCKER_BUILDKIT = '1'
     COMPOSE_DOCKER_CLI_BUILD = '1'
-
-    // Nombre de la imagen (puede incluir repo/namespace si quieres)
     USER_IMG = 'neixt-evolution-profe'
-
-    // Normaliza TAG con default si viene vacío
     TAG = "${params.TAG ?: 'latest'}"
   }
 
@@ -34,20 +29,20 @@ pipeline {
         sh '''
           set -e
           echo "===> Variables: USER_IMG=${USER_IMG}  TAG=${TAG}  ENV=${ENV}"
+
           if [ ! -f Dockerfile ]; then
             echo "ERROR: No se encontró el Dockerfile en $(pwd)"
             ls -la
             exit 1
           fi
 
-          # Asegura default también a nivel shell
           : "${TAG:=latest}"
           echo "Usando TAG=${TAG}"
 
           docker build \
             -f Dockerfile \
             -t "${USER_IMG}:${TAG}" .
-          
+
           docker images | grep "${USER_IMG}" || true
         '''
       }
@@ -59,8 +54,6 @@ pipeline {
           usernamePassword(credentialsId: 'NEIXT-IKNITL-USER', usernameVariable: 'REMOTE_USER', passwordVariable: 'REMOTE_PASS'),
           string(credentialsId: 'NEIXT-IKNITL-IP', variable: 'AWS_HOST')
         ]) {
-          // Nota: hay warnings por interpolación Groovy, es normal; se puede
-          // mitigar usando withEnv + sh '...' pero aquí mantenemos simpleza.
           sh """
             set -e
             echo "===> Enviando imagen ${USER_IMG}:${TAG} a ${AWS_HOST}"
@@ -77,7 +70,7 @@ pipeline {
           sh """
             set -e
             echo "===> Generando docker-compose.ci.override.yml con image concreta"
-            # MUY IMPORTANTE: el nombre del servicio DEBE coincidir con el de docker-compose.yml base
+            # IMPORTANTE: el nombre del servicio debe coincidir con el del compose base
             cat > docker-compose.ci.override.yml <<YAML
 version: "3.9"
 services:
@@ -101,19 +94,18 @@ YAML
           sh """
             set -e
             echo "===> Creando carpeta remota ${REMOTE_DIR} en ${AWS_HOST}"
-            sshpass -p "$REMOTE_PASS" ssh -o StrictHostKeyChecking=no "$REMOTE_USER@$AWS_HOST" "mkdir -p '${REMOTE_DIR}'"
+            sshpass -p "$REMOTE_PASS" ssh -o StrictHostKeyChecking=no "$REMOTE_USER@$AWS_HOST" "mkdir -p ${REMOTE_DIR} || true"
 
             echo "===> Enviando compose base, override y .env"
-            sshpass -p "$REMOTE_PASS" scp -o StrictHostKeyChecking=no docker-compose.yml docker-compose.ci.override.yml "$REMOTE_USER@$AWS_HOST:'${REMOTE_DIR}/'"
-            sshpass -p "$REMOTE_PASS" scp -o StrictHostKeyChecking=no .env.ci "$REMOTE_USER@$AWS_HOST:'${REMOTE_DIR}/.env'"
+            sshpass -p "$REMOTE_PASS" scp -o StrictHostKeyChecking=no docker-compose.yml docker-compose.ci.override.yml "$REMOTE_USER@$AWS_HOST:${REMOTE_DIR}/"
+            sshpass -p "$REMOTE_PASS" scp -o StrictHostKeyChecking=no .env.ci "$REMOTE_USER@$AWS_HOST:${REMOTE_DIR}/.env"
 
             echo "===> Levantando servicios con imagen ya cargada (sin build)"
             sshpass -p "$REMOTE_PASS" ssh -o StrictHostKeyChecking=no "$REMOTE_USER@$AWS_HOST" "
               set -e
-              cd '${REMOTE_DIR}'
+              cd ${REMOTE_DIR}
               export DOCKER_BUILDKIT=1
               export NODE_ENV=${ENV == 'prod' ? 'production' : 'development'}
-              # IMPORTANTE: --no-build para evitar que componga intente build en el remoto
               docker compose -f docker-compose.yml -f docker-compose.ci.override.yml up -d \\
                 --remove-orphans --pull=never --no-build
 
