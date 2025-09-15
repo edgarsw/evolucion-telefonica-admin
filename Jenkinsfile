@@ -74,7 +74,7 @@ pipeline {
             cat > docker-compose.ci.override.yml <<YAML
 version: "3.9"
 services:
-  evolution-profe:
+  neixt-evolution-profe:
     image: ${USER_IMG}:${TAG}
 YAML
 
