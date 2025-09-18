@@ -63,8 +63,8 @@ export class ClientesComponent {
     this.showAddForm = false;
   }
 
-  onDelete(client: Client) {
-    this.store.delete(client.clientId);
+  onDeactivate(client: Client) {
+    this.store.deactivate(client.clientId);
   }
 
   onUpdate(client: Client) {

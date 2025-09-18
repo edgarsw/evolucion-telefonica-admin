@@ -26,8 +26,8 @@ export class ClientService {
     return this.http.post<ApiResponse<Client>>(this.apiUrl, client);
   }
 
-  deleteClient(id: number): Observable<ApiResponse<null>> {
-    return this.http.delete<ApiResponse<null>>(`${this.apiUrl}/${id}`);
+  deactivateClient(id: number): Observable<ApiResponse<null>> {
+    return this.http.patch<ApiResponse<null>>(`${this.apiUrl}/${id}/deactivate`, {});
   }
 
   updateClient(client: Client): Observable<ApiResponse<Client>> {

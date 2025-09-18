@@ -15,7 +15,7 @@ import { NgClass } from '@angular/common';
 import { ciudades, estados, zonas } from '../../utils/hardcode-data.utils';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { TextareaModule } from 'primeng/textarea';
-import { Client } from '../../models/client.model';
+import { Client, SubClient } from '../../models/client.model';
 import { LimitTypeEnum } from '../../enums/limit-type.enum';
 import { DatePickerModule } from 'primeng/datepicker';
 import { SubClientService } from '../../services/sub-client.service';
@@ -53,7 +53,7 @@ export class ClientsTableComponent {
   @Input() clientes: Client[] = [];
   @Input() tipoClientes: string[] = [];
   @Output() addRequested = new EventEmitter<void>();
-  @Output() deleteRequested = new EventEmitter<Client>();
+  @Output() deactivateRequested = new EventEmitter<Client>();
   @Output() updateRequested = new EventEmitter<Client>();
 
   zonas = zonas;
@@ -79,8 +79,8 @@ export class ClientsTableComponent {
   editCliente: Client = this.emptyCliente();
 
   globalFilterFields: (keyof Client)[] = [
-    'isActiveClient', 'name', 'taxId', 'street', 'exteriorNumber', 'interiorNumber',
-    'neighborhood', 'state', 'city', 'municipality', 'postalCode', 'phone', 'email'
+    'isActiveClient', 'name', 'taxId', 'street', 'exteriorNumber',
+    'neighborhood', 'state', 'city', 'municipality', 'phone', 'email'
   ];
 
   private messageService = inject(MessageService);
@@ -101,12 +101,10 @@ export class ClientsTableComponent {
       taxId: '',
       street: '',
       exteriorNumber: '',
-      interiorNumber: '',
       neighborhood: '',
       state: '',
       city: '',
       municipality: '',
-      postalCode: 0,
       phone: '',
       email: '',
       consignmentPriceICC: '',
@@ -156,17 +154,17 @@ export class ClientsTableComponent {
     this.editingRef = null;
   }
 
-  deleteClient(event: Event, rowData: Client) {
+  deactivateClient(event: Event, rowData: Client) {
     this.confirmationService.confirm({
       target: event.currentTarget as HTMLElement,
-      message: '¿Eliminar este cliente?',
+      message: '¿Desactivar este cliente?',
       header: 'Confirmar',
       icon: 'pi pi-info-circle',
       rejectLabel: 'Cancelar',
       rejectButtonProps: { label: 'Cancelar', severity: 'secondary', outlined: true },
-      acceptButtonProps: { label: 'Eliminar', severity: 'danger' },
+      acceptButtonProps: { label: 'Desactivar', severity: 'danger' },
       accept: () => {
-        this.deleteRequested.emit(rowData);
+        this.deactivateRequested.emit(rowData);
       }
     });
   }
@@ -347,15 +345,46 @@ export class ClientsTableComponent {
     console.log("onRowCollapse", event.data);
   }
 
-  onToggleSubClientActive(subclient: any, checked: boolean) {
-    subclient.isActive = checked ? 1 : 0;
-    this.subClientService.update(subclient.id, { isActive: subclient.isActive }).subscribe({
+  onDeactivateSubclient(event: Event, subclient: SubClient) {
+    this.confirmationService.confirm({
+      target: event.currentTarget as HTMLElement,
+      message: `¿Desactivar subcliente "${subclient.name}"?`,
+      header: 'Desactivar subcliente',
+      icon: 'pi pi-info-circle',
+      rejectLabel: 'Cancelar',
+      rejectButtonProps: { label: 'Cancelar', severity: 'secondary', outlined: true },
+      acceptButtonProps: { label: 'Desactivar', severity: 'danger' },
+      accept: () => {
+        const inactiveStatusValue = 0;
+        this.manageSubclientStatus(subclient, inactiveStatusValue);
+      }
+    });
+  }
+
+  onActivateSubclient(event: Event, subclient: SubClient) {
+    this.confirmationService.confirm({
+      target: event.currentTarget as HTMLElement,
+      message: `¿Activar subcliente "${subclient.name}"?`,
+      header: 'Activar subcliente',
+      icon: 'pi pi-info-circle',
+      rejectLabel: 'Cancelar',
+      rejectButtonProps: { label: 'Cancelar', severity: 'secondary', outlined: true },
+      acceptButtonProps: { label: 'Activar', severity: 'success' },
+      accept: () => {
+        const activeStatusValue = 1;
+        this.manageSubclientStatus(subclient, activeStatusValue);
+      }
+    });
+  }
+
+  private manageSubclientStatus(subclient: SubClient, statusValue: number) {
+    this.subClientService.update(subclient.id, { isActive: statusValue }).subscribe({
       next: () => {
-        const status = subclient.isActive ? 'activado' : 'desactivado';
+        subclient.isActive = statusValue;
         this.messageService.add({
           severity: 'success',
           summary: 'Actualizado',
-          detail: `Subcliente '${subclient.name}' ha sido ${status}`
+          detail: `Subcliente '${subclient.name}' ha sido desactivado`
         });
       },
       error: () => {
@@ -364,8 +393,6 @@ export class ClientsTableComponent {
           summary: 'Error',
           detail: 'No se pudo actualizar el estado'
         });
-        // rollback UI
-        subclient.isActive = subclient.isActive ? 0 : 1;
       }
     });
   }

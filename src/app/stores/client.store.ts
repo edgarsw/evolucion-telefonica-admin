@@ -83,15 +83,15 @@ export class ClientStore {
     }
 
 
-    delete(clientId: number) {
-        this.clientService.deleteClient(clientId).subscribe({
+    deactivate(clientId: number) {
+        this.clientService.deactivateClient(clientId).subscribe({
             next: (res) => {
                 if (res.status === StatusResponse.SUCCESS) {
                     this.clients.update((list) => list.filter((c) => c.clientId !== clientId));
                     this.messageService.add({
                         severity: 'info',
-                        summary: 'Eliminado',
-                        detail: `Cliente eliminado correctamente`,
+                        summary: 'Desactivado',
+                        detail: `Cliente desactivado correctamente`,
                     });
                 }
             },
@@ -99,7 +99,7 @@ export class ClientStore {
                 this.messageService.add({
                     severity: 'error',
                     summary: 'Error',
-                    detail: 'No se pudo eliminar el cliente',
+                    detail: 'No se pudo desactivar el cliente',
                 });
                 console.error('Error deleting client:', err);
             },

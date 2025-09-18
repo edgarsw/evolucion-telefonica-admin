@@ -33,7 +33,6 @@
             <th class="whitespace-nowrap">Estado</th>
             <th class="whitespace-nowrap">Ciudad</th>
             <th class="whitespace-nowrap">Municipio</th>
-            <th class="whitespace-nowrap">C.P.</th>
             <th class="whitespace-nowrap">Celular</th>
             <th class="whitespace-nowrap">Correo</th>
             <th pFrozenColumn alignFrozen="right"></th>
@@ -41,7 +40,7 @@
     </ng-template>
     <ng-template #body let-client let-expanded="expanded">
         <tr>
-            @if (client.subClients.length > 0) {
+            @if (client.subClients?.length > 0) {
             <td>
                 <p-button type="button" size="small" pRipple [pRowToggler]="client" [text]="true" severity="secondary" [rounded]="true" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" />
             </td>
@@ -49,7 +48,7 @@
             <td>
             </td>
             }
-            <td class="whitespace-nowrap">{{ client.isActiveClient }}</td>
+            <td class="whitespace-nowrap">{{ client.isActiveClient === 1 ? 'Sí' : 'No' }}</td>
             <td class="whitespace-nowrap">{{ client.name }}</td>
             <td class="whitespace-nowrap">${{ client.balance ?? ' - ' }}</td>
             <td class="whitespace-nowrap">{{ client.taxId }}</td>
@@ -59,7 +58,6 @@
             <td class="whitespace-nowrap">{{ client.state }}</td>
             <td class="whitespace-nowrap">{{ client.city }}</td>
             <td class="whitespace-nowrap">{{ client.municipality }}</td>
-            <td class="whitespace-nowrap">{{ client.postalCode }}</td>
             <td class="whitespace-nowrap">{{ client.phone }}</td>
             <td class="whitespace-nowrap">{{ client.email }}</td>
             <td class="whitespace-nowrap" pFrozenColumn alignFrozen="right">
@@ -72,9 +70,9 @@
                 <p-button icon="pi pi-pencil" class="mr-1" [rounded]="true" [outlined]="true"
                     pTooltip="Editar Cliente" tooltipPosition="top"
                     (click)="editClient(client)" size="small" />
-                <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
-                    pTooltip="Eliminar Cliente" tooltipPosition="top"
-                    (click)="deleteClient($event, client)" size="small" />
+                <p-button icon="pi pi-lock" severity="danger" [rounded]="true" [outlined]="true"
+                    pTooltip="Desactivar Cliente" tooltipPosition="top"
+                    (click)="deactivateClient($event, client)" size="small" />
             </td>
         </tr>
     </ng-template>
@@ -109,21 +107,26 @@
                                         <p-sortIcon field="email" />
                                     </div>
                                 </th>
+                                <th pFrozenColumn alignFrozen="right"></th>
                             </tr>
                         </ng-template>
                         <ng-template #body let-subclient>
                             <tr>
-                                <td>
-                                    <div class="flex place-content-center">
-                                        <p-checkbox 
-                                        binary="true" 
-                                        [ngModel]="subclient.isActive === 1" 
-                                        (onChange)="onToggleSubClientActive(subclient, $event.checked)" />
-                                    </div>
-                                </td>
+                                <td><div class="flex place-content-center">{{ subclient.isActive ? 'Sí' : 'No'}}</div></td>
                                 <td>{{ subclient.name }}</td>
                                 <td>{{ subclient.username }}</td>
                                 <td>{{ subclient.email }}</td>
+                                <td>
+                                    @if (subclient.isActive) {
+                                    <p-button icon="pi pi-lock" severity="danger" [rounded]="true" [outlined]="true"
+                                        pTooltip="Desactivar Subcliente" tooltipPosition="top"
+                                        (click)="onDeactivateSubclient($event, subclient)" size="small" />
+                                    } @else {
+                                    <p-button icon="pi pi-lock-open" severity="success" [rounded]="true" [outlined]="true"
+                                        pTooltip="Activar Subcliente" tooltipPosition="top"
+                                        (click)="onActivateSubclient($event, subclient)" size="small" />
+                                    }
+                                </td>
                             </tr>
                         </ng-template>
                         <ng-template #emptymessage>
@@ -174,12 +177,6 @@
                 </p-floatlabel>
 
                 <p-floatlabel variant="on">
-                    <input pInputText id="interiorNumber" name="interiorNumber" [(ngModel)]="editCliente.interiorNumber"
-                        maxlength="300" autocomplete="off" class="w-full" />
-                    <label for="interiorNumber">N° Interior</label>
-                </p-floatlabel>
-
-                <p-floatlabel variant="on">
                     <input pInputText id="neighborhood" name="neighborhood" [(ngModel)]="editCliente.neighborhood" required
                         maxlength="300" autocomplete="off" class="w-full"
                         [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['neighborhood'].invalid}" />
@@ -208,22 +205,15 @@
                     <label for="municipality">Municipio</label>
                 </p-floatlabel>
 
-                <p-floatlabel variant="on">
-                    <p-inputnumber class="w-full" id="postalCode" name="postalCode" [(ngModel)]="editCliente.postalCode" [useGrouping]="false"
-                        required [maxlength]="5" autocomplete="off"
-                        [ngClass]="{'p-invalid': editForm.submitted && editForm.controls['postalCode'].invalid}" />
-                    <label for="postalCode">Código Postal <span class="text-red-500">*</span></label>
-                </p-floatlabel>
-
                 <div class="flex items-center h-[2rem] gap-2 pl-1">
                     <p-checkbox inputId="hasPhoto" name="hasPhoto" binary="true"
-                        [(ngModel)]="editCliente.hasPhoto"></p-checkbox>
+                        [(ngModel)]="editCliente.hasPhoto" [trueValue]="1" [falseValue]="0"></p-checkbox>
                     <label for="hasPhoto">Foto forzosa</label>
                 </div>
 
                 <div class="flex items-center h-[2rem] gap-2 pl-1">
                     <p-checkbox inputId="isCommercial" name="isCommercial" binary="true"
-                        [(ngModel)]="editCliente.isCommercial"></p-checkbox>
+                        [(ngModel)]="editCliente.isCommercial" [trueValue]="1" [falseValue]="0"></p-checkbox>
                     <label for="isCommercial">Cliente Comercial</label>
                 </div>
             </div>

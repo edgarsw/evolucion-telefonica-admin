@@ -4,12 +4,10 @@ export interface Client {
   taxId?: string;
   street: string;
   exteriorNumber: string;
-  interiorNumber?: string;
   neighborhood: string;
   state: string;
   city: string;
   municipality?: string;
-  postalCode: number;
   phone?: string;
   email?: string;
   consignmentPriceICC: string;

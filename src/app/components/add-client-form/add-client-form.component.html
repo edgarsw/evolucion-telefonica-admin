@@ -30,12 +30,6 @@
             </p-floatlabel>
 
             <p-floatlabel variant="on">
-                <input pInputText id="interiorNumber" name="interiorNumber" [(ngModel)]="newCliente.interiorNumber"
-                    maxlength="300" autocomplete="off" class="w-full" />
-                <label for="interiorNumber">N° Interior</label>
-            </p-floatlabel>
-
-            <p-floatlabel variant="on">
                 <input pInputText id="neighborhood" name="neighborhood" [(ngModel)]="newCliente.neighborhood" required maxlength="300"
                     autocomplete="off" class="w-full"
                     [ngClass]="{'p-invalid': clienteForm.submitted && clienteForm.controls['neighborhood'].invalid}" />
@@ -64,20 +58,15 @@
                 <label for="municipality">Municipio</label>
             </p-floatlabel>
 
-            <p-floatlabel variant="on">
-                <p-inputnumber class="w-full" id="postalCode" name="postalCode" [(ngModel)]="newCliente.postalCode" [useGrouping]="false"
-                    required [maxlength]="5" autocomplete="off"
-                    [ngClass]="{'p-invalid': clienteForm.submitted && clienteForm.controls['postalCode'].invalid}" />
-                <label for="postalCode">Código Postal <span class="text-red-500">*</span></label>
-            </p-floatlabel>
-
             <div class="flex items-center h-[2rem] gap-2 pl-1">
-                <p-checkbox inputId="hasPhoto" name="hasPhoto" binary="true" [(ngModel)]="newCliente.hasPhoto"></p-checkbox>
+                <p-checkbox inputId="hasPhoto" name="hasPhoto" binary="true" [(ngModel)]="newCliente.hasPhoto"
+                    [trueValue]="1" [falseValue]="0"></p-checkbox>
                 <label for="hasPhoto">Foto forzosa</label>
             </div>
 
             <div class="flex items-center h-[2rem] gap-2 pl-1">
-                <p-checkbox inputId="isCommercial" name="isCommercial" binary="true" [(ngModel)]="newCliente.isCommercial"></p-checkbox>
+                <p-checkbox inputId="isCommercial" name="isCommercial" binary="true" [(ngModel)]="newCliente.isCommercial"
+                    [trueValue]="1" [falseValue]="0"></p-checkbox>
                 <label for="isCommercial">Cliente Comercial</label>
             </div>
         </div>
